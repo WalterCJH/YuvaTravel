@@ -1,0 +1,50 @@
+@{
+    ViewBag.Title = "取消訂閱 · 域見";
+    var result = ViewBag.UnsubResult as string ?? "invalid";
+    var email = ViewBag.UnsubEmail as string;
+}
+
+<section class="cat-header" style="text-align:center;">
+    <div class="container" style="max-width:680px;">
+        <div class="cat-titling">
+            <div class="eyebrow">NEWSLETTER · 取消訂閱</div>
+            @switch (result)
+            {
+                case "done":
+                    <h1 class="cat-title">已取消訂閱<span class="en">You're unsubscribed.</span></h1>
+                    <p class="cat-lede">
+                        @if (!string.IsNullOrEmpty(email))
+                        {
+                            <strong>@email</strong>
+                            <text> 已從電子報名單移除,我們不會再寄信給這個信箱。</text>
+                        }
+                        else
+                        {
+                            <text>此信箱已從電子報名單移除。</text>
+                        }
+                        若是誤觸,歡迎隨時回到 <a href="/">首頁</a> 重新訂閱。
+                    </p>
+                    break;
+                case "already":
+                    <h1 class="cat-title">已取消過了<span class="en">Already unsubscribed.</span></h1>
+                    <p class="cat-lede">
+                        @if (!string.IsNullOrEmpty(email))
+                        {
+                            <strong>@email</strong>
+                            <text> 已不在我們的電子報名單中。</text>
+                        }
+                        若想重新訂閱,可回到 <a href="/">首頁</a> 重新輸入信箱。
+                    </p>
+                    break;
+                default:
+                    <h1 class="cat-title">連結無效<span class="en">Invalid link.</span></h1>
+                    <p class="cat-lede">這個取消訂閱連結看起來無效或已過期。若有需要,請聯絡我們客服處理。</p>
+                    break;
+            }
+
+            <div style="margin-top:32px;">
+                <a href="/" class="btn">回首頁 →</a>
+            </div>
+        </div>
+    </div>
+</section>

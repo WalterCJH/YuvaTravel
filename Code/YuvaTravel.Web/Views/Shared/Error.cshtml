@@ -1,0 +1,53 @@
+@{
+    Layout = null;
+    var statusCode = ViewBag.StatusCode as int? ?? Context.Response.StatusCode;
+    if (statusCode < 400) statusCode = 500;
+}<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex" />
+    <title>錯誤 · 域見</title>
+    <style>
+        html, body { margin: 0; padding: 0; height: 100%; }
+        body {
+            font-family: 'Noto Serif TC', 'PingFang TC', serif;
+            background: #f7f3ea;
+            color: #1a1814;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+        .box { max-width: 480px; text-align: center; }
+        .code {
+            font-size: 96px;
+            line-height: 1;
+            margin: 0 0 16px;
+            letter-spacing: -.02em;
+        }
+        h1 { font-size: 22px; font-weight: 500; margin: 0 0 12px; }
+        p { color: rgba(0,0,0,.6); line-height: 1.7; margin: 0 0 28px; }
+        a {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #1a1814;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="code">@statusCode</div>
+        <h1>處理您的要求時發生錯誤</h1>
+        <p>嚮導正在低頭翻地圖,請稍後再試一次。</p>
+        <a href="/">回首頁</a>
+    </div>
+</body>
+</html>

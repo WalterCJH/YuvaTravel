@@ -1,0 +1,134 @@
+﻿
+.published-date {
+    display: flex;
+}
+
+/* ---- 基本結構 ---- */
+.table-scroll {
+    /*display: block;*/ /* 確保是可捲動的區塊 */
+    overflow-x: auto; /* 水平捲動 */
+    -webkit-overflow-scrolling: touch; /* iOS 慣性捲動 */
+    max-width: 100%;
+    /* 若父層是 flex/grid，以下兩行很關鍵 */
+    /*min-width: 0;*/ /* 允許縮小，不然會撐住不產生捲動 */
+    /* 若父層用了 overflow:hidden，請移除或改放在更外層 */
+    padding: 0.5rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* 合併邊框 */
+    border-spacing: 0;
+    background: #fff;
+}
+
+caption {
+    text-align: left;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+thead th {
+    background: #f5f7fa;
+    color: #222;
+    font-weight: 600;
+}
+
+th, td {
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0; /* 淺灰邊框 */
+    text-align: left; /* 需要右對齊可加 .text-right */
+    vertical-align: top;
+    word-break: break-word; /* 長字/URL 換行 */
+}
+
+/* ---- 斑馬紋與滑過效果 ---- */
+tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+tbody tr:hover {
+    background: #f0f6ff;
+}
+
+/* ---- 寬度與對齊工具 ---- */
+.w-80 {
+    width: 80px;
+}
+
+.w-120 {
+    width: 120px;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* ---- 小螢幕優化 ---- */
+@media (max-width: 640px) {
+    th, td {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+}
+
+
+
+/* 只在 .content 內套用，但排除 .article-menu-box-list（含其內部巢狀清單） */
+.content :where(ul, ol):not(.article-menu-box-list):not(.article-menu-box-list *) {
+    list-style-position: outside;
+    margin: 1em 0;
+    padding-left: 1.5em;
+}
+
+/* 符號/編號（同樣排除 article-menu-box-list） */
+.content ul:not(.article-menu-box-list):not(.article-menu-box-list *) {
+    list-style-type: disc;
+}
+
+.content ol:not(.article-menu-box-list):not(.article-menu-box-list *) {
+    list-style-type: decimal;
+}
+
+.content li:not(.article-menu-box-list *):not(.article-menu-box-list) {
+    margin: 0.25em 0;
+}
+
+/* 巢狀層級：越深 margin/padding 越大（同樣排除 article-menu-box-list） */
+.content :where(ul, ol) :where(ul, ol):not(.article-menu-box-list):not(.article-menu-box-list *) {
+    margin: 1.2em 0;
+    padding-left: 1.75em;
+}
+
+.content :where(ul, ol) :where(ul, ol) :where(ul, ol):not(.article-menu-box-list):not(.article-menu-box-list *) {
+    margin: 1.4em 0;
+    padding-left: 2em;
+}
+
+.content :where(ul, ol) :where(ul, ol) :where(ul, ol) :where(ul, ol):not(.article-menu-box-list):not(.article-menu-box-list *) {
+    margin: 1.6em 0;
+    padding-left: 2.25em;
+}
+
+/* 可選：巢狀 marker 樣式（同樣排除 article-menu-box-list） */
+.content ul ul:not(.article-menu-box-list *):not(.article-menu-box-list) {
+    list-style-type: circle;
+}
+
+.content ul ul ul:not(.article-menu-box-list *):not(.article-menu-box-list) {
+    list-style-type: square;
+}
+
+.content ol ol:not(.article-menu-box-list *):not(.article-menu-box-list) {
+    list-style-type: lower-alpha;
+}
+
+.content ol ol ol:not(.article-menu-box-list *):not(.article-menu-box-list) {
+    list-style-type: lower-roman;
+}
+

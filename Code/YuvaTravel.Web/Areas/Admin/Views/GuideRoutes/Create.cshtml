@@ -1,0 +1,21 @@
+@model GuideRouteCreateOrEdit
+@{
+    ViewBag.Title = StrText.Create + StrText.GuideRoutes;
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.Guides"
+                    resource="@StrText.GuideRoutes"
+                    resource-route-guideId="@Model.GuideId"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Create)" method="post">
+    <section class="content">
+        <partial name="_Form" model="Model" />
+        <div class="row"><div class="col-12">
+            <a asp-action="@nameof(StrText.Index)" asp-route-guideId="@Model.GuideId" class="btn btn-secondary">@StrText.ReturnIndex</a>
+            <input type="submit" value="@StrText.Save" class="btn btn-success float-right">
+        </div></div>
+    </section>
+</form>

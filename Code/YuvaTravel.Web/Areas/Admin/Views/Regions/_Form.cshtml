@@ -1,0 +1,66 @@
+@model RegionCreateOrEdit
+
+<div class="row"><div class="col-12"><div asp-validation-summary="ModelOnly" class="text-danger"></div></div></div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card card-primary">
+            <div class="card-header"><h3 class="card-title">@StrText.Generally</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <cus-checkbox asp-for="IsActive" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Code" class="control-label col-md-12"></label>
+                    <input asp-for="Code" class="form-control" />
+                    <span asp-validation-for="Code" class="text-danger"></span>
+                    <small class="text-muted">URL 用,例 kyoto / okinawa</small>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label asp-for="Name" class="control-label col-md-12"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label asp-for="NameEn" class="control-label col-md-12"></label>
+                        <input asp-for="NameEn" class="form-control" />
+                        <span asp-validation-for="NameEn" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label col-md-12"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DisplaySeq" class="control-label col-md-12"></label>
+                    <input asp-for="DisplaySeq" class="form-control" />
+                    <span asp-validation-for="DisplaySeq" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card card-secondary">
+            <div class="card-header"><h3 class="card-title">圖片 (200×200)</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    @{
+                        var previewUrl = !string.IsNullOrEmpty(Model.ImageUrl_) ? Model.ImageUrl_ : (!string.IsNullOrEmpty(Model.ImageUrl) ? Model.ImageUrl : "/Images/empty.jpg");
+                    }
+                    <img src="@previewUrl" style="width:200px;height:200px;object-fit:cover;border-radius:8px;" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="ImageFile" class="control-label col-md-12"></label>
+                    <input asp-for="ImageFile" type="file" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="ImageUrl" class="control-label col-md-12"></label>
+                    <input asp-for="ImageUrl" class="form-control" placeholder="或直接貼 URL" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

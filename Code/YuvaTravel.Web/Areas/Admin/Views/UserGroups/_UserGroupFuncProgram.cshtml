@@ -1,0 +1,137 @@
+@model UserGroupCreateOrEdit
+
+<div class="card card-secondary">
+    <div class="card-header">
+        <h3 class="card-title">@StrText.Permissions</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row js-section-div">
+            <div class="col-12 mb-3 pl-0">
+                <div class="custom-control custom-checkbox">
+                    <input asp-for="CheckAll" class="custom-control-input js-section-checkAll" />
+                    <label asp-for="CheckAll" class="custom-control-label"></label>
+                </div>
+            </div>
+            <div class="col-12">
+                @for (int i = 0; i < Model.FuncGroups.Count(); i++)
+                {
+                    var funcGroup = Model.FuncGroups[i];
+                    var programs = funcGroup.FuncPrograms.OrderBy(c => c.DisplaySeq).ToList();
+                    string checkGroupId = $"FuncGroups[{i}].FuncGroupCheckAll";
+
+                    <input type="hidden" name="FuncGroups[@i].Name" value="@funcGroup.Name" />
+
+                    <div class="row js-section-div">
+                        <div class="col-12 alert-info rounded py-2">
+                            <div class="custom-control custom-checkbox">
+                                <input class="custom-control-input js-section-checkAll" id="@checkGroupId" name="@checkGroupId" type="checkbox" value="true" checked="@funcGroup.FuncGroupCheckAll" />
+                                <input name="@checkGroupId" type="hidden" value="false" />
+                                <label for="@checkGroupId" class="custom-control-label">@funcGroup.Name</label>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="row">
+                                @for (int j = 0; j < programs.Count(); j++)
+                                {
+                                    string programCheckBoxName = $"FuncGroups[{i}].FuncPrograms[{j}].IsActive";
+                                    string programCreateCheckBoxName = $"FuncGroups[{i}].FuncPrograms[{j}].IsCreate";
+                                    string programEditCheckBoxName = $"FuncGroups[{i}].FuncPrograms[{j}].IsEdit";
+                                    string programDeleteCheckBoxName = $"FuncGroups[{i}].FuncPrograms[{j}].IsDelete";
+                                    string programDetailsCheckBoxName = $"FuncGroups[{i}].FuncPrograms[{j}].IsDetails";
+                                    string programImportCheckBoxName = $"FuncGroups[{i}].FuncPrograms[{j}].IsImport";
+                                    string programExportCheckBoxName = $"FuncGroups[{i}].FuncPrograms[{j}].IsExport";
+                                <div class="col-4 col-xl-2 btn btn-block btn-default mt-3 js-section-div">
+                                    <input type="hidden" name="FuncGroups[@i].FuncPrograms[@j].ProgramId" value="@programs[j].ProgramId" />
+                                    <input type="hidden" name="FuncGroups[@i].FuncPrograms[@j].Name" value="@programs[j].Name" />
+                                    <input type="hidden" name="FuncGroups[@i].FuncPrograms[@j].DisplaySeq" value="@programs[j].DisplaySeq" />
+                                    <input type="hidden" name="FuncGroups[@i].FuncPrograms[@j].IsActiveCreate" value="@(programs[j].IsActiveCreate ? "true" : "false")" />
+                                    <input type="hidden" name="FuncGroups[@i].FuncPrograms[@j].IsActiveEdit" value="@(programs[j].IsActiveEdit ? "true" : "false")" />
+                                    <input type="hidden" name="FuncGroups[@i].FuncPrograms[@j].IsActiveDelete" value="@(programs[j].IsActiveDelete ? "true" : "false")" />
+                                    <input type="hidden" name="FuncGroups[@i].FuncPrograms[@j].IsActiveDetails" value="@(programs[j].IsActiveDetails ? "true" : "false")" />
+                                    <input type="hidden" name="FuncGroups[@i].FuncPrograms[@j].IsActiveImport" value="@(programs[j].IsActiveImport ? "true" : "false")" />
+                                    <input type="hidden" name="FuncGroups[@i].FuncPrograms[@j].IsActiveExport" value="@(programs[j].IsActiveExport ? "true" : "false")" />
+                                    <div class="custom-control custom-checkbox">
+                                        <input class="custom-control-input js-section-checkAll" id="@programCheckBoxName" name="@programCheckBoxName" type="checkbox" value="true" checked="@programs[j].IsActive" />
+                                        <input name="@programCheckBoxName" type="hidden" value="false" />
+                                        <label for="@programCheckBoxName" class="custom-control-label">@programs[j].Name</label>
+                                    </div>
+                                    <div class="row">
+                                        @if (programs[j].IsActiveCreate)
+                                        {
+                                            <div class="col-auto">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input" id="@programCreateCheckBoxName" name="@programCreateCheckBoxName" type="checkbox" value="true" checked="@programs[j].IsCreate" />
+                                                    <input name="@programCreateCheckBoxName" type="hidden" value="false" />
+                                                    <label for="@programCreateCheckBoxName" class="custom-control-label">新增</label>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (programs[j].IsActiveEdit)
+                                        {
+                                            <div class="col-auto">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input" id="@programEditCheckBoxName" name="@programEditCheckBoxName" type="checkbox" value="true" checked="@programs[j].IsEdit" />
+                                                    <input name="@programEditCheckBoxName" type="hidden" value="false" />
+                                                    <label for="@programEditCheckBoxName" class="custom-control-label">修改</label>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (programs[j].IsActiveDelete)
+                                        {
+                                            <div class="col-auto">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input" id="@programDeleteCheckBoxName" name="@programDeleteCheckBoxName" type="checkbox" value="true" checked="@programs[j].IsDelete" />
+                                                    <input name="@programDeleteCheckBoxName" type="hidden" value="false" />
+                                                    <label for="@programDeleteCheckBoxName" class="custom-control-label">刪除</label>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (programs[j].IsActiveDetails)
+                                        {
+                                            <div class="col-auto">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input" id="@programDetailsCheckBoxName" name="@programDetailsCheckBoxName" type="checkbox" value="true" checked="@programs[j].IsDetails" />
+                                                    <input name="@programDetailsCheckBoxName" type="hidden" value="false" />
+                                                    <label for="@programDetailsCheckBoxName" class="custom-control-label">檢視</label>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (programs[j].IsActiveImport)
+                                        {
+                                            <div class="col-auto">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input" id="@programImportCheckBoxName" name="@programImportCheckBoxName" type="checkbox" value="true" checked="@programs[j].IsImport" />
+                                                    <input name="@programImportCheckBoxName" type="hidden" value="false" />
+                                                    <label for="@programImportCheckBoxName" class="custom-control-label">匯入</label>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (programs[j].IsActiveExport)
+                                        {
+                                            <div class="col-auto">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input" id="@programExportCheckBoxName" name="@programExportCheckBoxName" type="checkbox" value="true" checked="@programs[j].IsExport" />
+                                                    <input name="@programExportCheckBoxName" type="hidden" value="false" />
+                                                    <label for="@programExportCheckBoxName" class="custom-control-label">匯出</label>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!-- /.card-body -->
+</div>
+<!-- /.card -->
+

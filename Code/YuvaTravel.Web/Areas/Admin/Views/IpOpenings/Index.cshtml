@@ -1,0 +1,201 @@
+@model IpOpeningFilter
+
+@{
+    ViewBag.Title = StrText.IpOpenings + StrText.Index;
+    var listData = ViewBag.ListData as IEnumerable<IpOpening>;
+    object SetRouteValue(string sortBy, string sortDirection, int? pageNo = null)
+    {
+        var value = new { SortBy = sortBy, SortDirection = sortDirection, PageNo = pageNo, Keyword = Model.Keyword, IsActive = Model.IsActive };
+
+        return value;
+    }
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.WebPageInfo"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Index)" method="get">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="form-group">
+                <div class="row mb-3">
+                    <div class="col-md-2 col-12">
+                        <label asp-for="IsActive" class="control-label col-12"></label>
+                        <select asp-for="IsActive" asp-items="Html.GetEnumSelectList<WhetherType>()" class="form-control">
+                            <option value="">(請選擇)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-12">
+                        <label asp-for="IpAddress" class="control-label col-12"></label>
+                        <input asp-for="IpAddress" class="form-control" placeholder="請輸入IP" />
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <label asp-for="Keyword" class="control-label col-12"></label>
+                        <input asp-for="Keyword" class="form-control" placeholder="請輸入備註" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-secondary js-search-clear" title="清除搜尋欄位">
+                    <i class="fas fa-broom"></i>
+                </button>
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<section class="content">
+
+    <div class="row">
+        <div class="col-12">
+            <p>
+                <button class="btn btn-warning" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    IP白名單使用說明
+                </button>
+            </p>
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                    <p>
+                        IP白名單權限大於IP黑名單，EX：IP(192.168.1.1)，同時設定 IP白名單 與 IP黑名單，那此IP是<span class="text-danger-red fw-bold">允許瀏覽本網站的</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Html.PagedListPager(listData as IPagedList, (p) => Url.Action(nameof(StrText.Index), SetRouteValue(Model.SortBy, Model.SortDirection, p)),
+    new PagedListRenderOptions
+    {
+        LiElementClasses = new string[] { "paginate_button page-item previous" },
+        PageClasses = new string[] { "page-link" },
+        DisplayLinkToFirstPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always
+    })
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">@StrText.Index</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped projects">
+                <thead>
+                    <tr>
+                        <th style="width: 10%">
+                            <cus-display-name for-type="@typeof(IpOpening)" property="IsActive" />
+                        </th>
+                        <th style="width: 10%">
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("IpAddress", nameof(StrText.ASC)))"><i class="fas fa-sort-numeric-up"></i></a>
+                            <cus-display-name for-type="@typeof(IpOpening)" property="IpAddress" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("IpAddress", nameof(StrText.DESC)))"><i class="fas fa-sort-numeric-down-alt"></i></a>
+                        </th>
+                        <th style="width: 15%">
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("UserLog.CreateTime", nameof(StrText.ASC)))"><i class="fas fa-sort-amount-up-alt"></i></a>
+                            <cus-display-name for-type="@typeof(IpOpening)" property="CreateTime" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("UserLog.CreateTime", nameof(StrText.DESC)))"><i class="fas fa-sort-amount-down"></i></a>
+                        </th>
+                        <th style="width: 15%">
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("UserLog.UpdateTime", nameof(StrText.ASC)))"><i class="fas fa-sort-amount-up-alt"></i></a>
+                            <cus-display-name for-type="@typeof(IpOpening)" property="UpdateTime" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("UserLog.UpdateTime", nameof(StrText.DESC)))"><i class="fas fa-sort-amount-down"></i></a>
+                        </th>
+                        <th>
+                            <cus-display-name for-type="@typeof(IpOpening)" property="Memo" />
+                        </th>
+                        <th class="project-actions text-right" style="width: 20%">
+                            @if (ViewBag.IsCreate)
+                            {
+                                <a asp-action="@nameof(StrText.Create)" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus"></i>
+                                    @StrText.Create
+                                </a>
+                            }
+                            @if (ViewBag.IsImport)
+                            {
+                                <a asp-action="@nameof(StrText.Import)" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-file-import"></i>
+                                    @StrText.Import
+                                </a>
+                            }
+                            @if (ViewBag.IsExport)
+                            {
+                                <a asp-action="@nameof(StrText.Export)" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-file-export"></i>
+                                    @StrText.Export
+                                </a>
+                            }
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in listData)
+                    {
+                        <tr>
+                            <td>
+                                <cus-display value="@item.IsActive" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.IpAddress" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.CreateTime" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.UpdateTime" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.Memo" />
+                            </td>
+                            <td class="project-actions text-right">
+                                @if (ViewBag.IsDetails)
+                                {
+                                    <a asp-action="@nameof(StrText.Details)" asp-route-id="@item.IpOpeningId" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-folder"></i>
+                                        @StrText.Details
+                                    </a>
+                                }
+                                @if (ViewBag.IsEdit)
+                                {
+                                    <a asp-action="@nameof(StrText.Edit)" asp-route-id="@item.IpOpeningId" class="btn btn-info btn-sm">
+                                        <i class="fas fa-pencil-alt"></i>
+                                        @StrText.Edit
+                                    </a>
+                                }
+                                @if (ViewBag.IsDelete)
+                                {
+                                    <a asp-action="@nameof(StrText.Delete)" asp-route-id="@item.IpOpeningId" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                        @StrText.Delete
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+
+    @Html.PagedListPager(listData as IPagedList, (p) => Url.Action(nameof(StrText.Index), SetRouteValue(Model.SortBy, Model.SortDirection, p)),
+    new PagedListRenderOptions
+    {
+        LiElementClasses = new string[] { "paginate_button page-item previous" },
+        PageClasses = new string[] { "page-link" },
+        DisplayLinkToFirstPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always
+    })
+
+</section>

@@ -1,0 +1,30 @@
+# -----在.sln同目錄執行
+
+# add migration 
+dotnet ef migrations add init --project YuvaTravel.Data --startup-project YuvaTravel.Web
+
+# update migration 到最新
+dotnet ef database update --project YuvaTravel.Data --startup-project YuvaTravel.Web
+
+# 從某個 migration 到最新
+dotnet ef migrations script <FromMigration> HEAD --project Yu.Data --startup-project Yu.Web -o migration.sql
+
+# 從某個 migration 到特定 migration
+dotnet ef migrations script <FromMigration> <ToMigration> --project Yu.Data --startup-project Yu.Web -o migration.sql
+
+
+# -----建議的部署流程
+# 1. 新增 migration
+dotnet ef migrations add <MigrationName> --project Yu.Data --startup-project Yu.Web
+
+# 2. 產生 idempotent script
+dotnet ef migrations script --idempotent --project Yu.Data --startup-project Yu.Web -o migration.sql
+
+# 3. 將 migration.sql 拿去 server 執行
+
+
+
+
+rd /s /q bin obj
+dotnet run
+

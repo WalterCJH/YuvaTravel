@@ -1,0 +1,670 @@
+/* =====================================================================
+   YuvaTravel 域見 — Guides directory + profile page styles
+   ===================================================================== */
+
+/* ---------- Guides directory hero ---------- */
+.guides-hero {
+  padding: clamp(48px, 6vw, 88px) 0 clamp(28px, 4vw, 48px);
+  background:
+    radial-gradient(1100px 420px at 50% 0%, rgba(201,169,97,.12), transparent 65%),
+    linear-gradient(180deg, var(--sand-50) 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--line-gold-soft);
+  text-align: center;
+}
+.guides-hero h1 {
+  font-family: var(--font-zh);
+  font-weight: 500;
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1.2;
+  letter-spacing: .04em;
+  margin: 14px 0 16px;
+  color: var(--fg-1);
+}
+.guides-hero p {
+  font-family: var(--font-zh);
+  font-size: clamp(15px, 1.4vw, 17px);
+  line-height: 1.85;
+  color: var(--fg-2);
+  margin: 0 auto 18px;
+  max-width: 620px;
+  text-wrap: pretty;
+}
+.guides-hero .stats {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--gold-700);
+  letter-spacing: .04em;
+}
+
+/* ---------- Featured guide card (large) ---------- */
+.featured-guide {
+  position: relative;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid var(--line-1);
+  display: block;
+  aspect-ratio: 21/9;
+  margin-bottom: clamp(40px, 5vw, 64px);
+}
+.featured-guide img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  object-position: center top;
+}
+.featured-guide-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(11,34,64,0) 30%, rgba(11,34,64,.85) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(24px, 4vw, 48px);
+  color: var(--sand-100);
+}
+.featured-guide .eyebrow {
+  color: var(--gold-300);
+  margin-bottom: 8px;
+}
+.featured-guide-overlay h2 {
+  font-family: var(--font-zh);
+  font-weight: 500;
+  font-size: clamp(28px, 4vw, 44px);
+  letter-spacing: .04em;
+  margin: 0 0 6px;
+  color: var(--sand-100);
+}
+.featured-guide-en {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-size: clamp(14px, 1.4vw, 18px);
+  color: rgba(245,239,227,.8);
+  margin-bottom: 14px;
+}
+.featured-guide-quote {
+  font-family: var(--font-zh);
+  font-size: clamp(15px, 1.5vw, 18px);
+  line-height: 1.65;
+  color: rgba(245,239,227,.92);
+  font-style: italic;
+  max-width: 560px;
+}
+
+/* ---------- Filter row ---------- */
+.guides-filter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 18px 0;
+  margin-bottom: clamp(20px, 3vw, 32px);
+  border-top: 1px solid var(--line-gold-soft);
+  border-bottom: 1px solid var(--line-gold-soft);
+}
+.city-chips {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.city-chip {
+  font-family: var(--font-zh);
+  font-size: 14px;
+  color: var(--fg-2);
+  background: transparent;
+  border: 1px solid var(--line-1);
+  padding: 6px 16px;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  transition: all .2s var(--ease-out);
+}
+.city-chip:hover { border-color: var(--gold-600); color: var(--ink-900); }
+.city-chip.is-active {
+  background: var(--ink-900);
+  color: var(--sand-100);
+  border-color: var(--ink-900);
+}
+.guides-filter-meta {
+  display: flex; align-items: center; gap: 16px;
+  font-family: var(--font-zh); font-size: 13px; color: var(--fg-3);
+}
+
+/* ---------- Guide grid (cards A) ---------- */
+.guides-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 2.4vw, 28px);
+  padding-bottom: clamp(40px, 5vw, 64px);
+}
+@media (max-width: 960px) { .guides-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .guides-grid { grid-template-columns: 1fr; } }
+
+.gcard {
+  background: var(--bg-raised);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform .28s var(--ease-out), box-shadow .28s var(--ease-out), border-color .28s var(--ease-out);
+}
+.gcard:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold-400);
+  box-shadow: var(--shadow-2);
+}
+.gcard-portrait {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: var(--sand-100);
+}
+.gcard-portrait img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .6s var(--ease-out);
+}
+.gcard:hover .gcard-portrait img { transform: scale(1.05); }
+.gcard-city, .gcard-rating {
+  position: absolute; top: 12px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+.gcard-city {
+  left: 12px;
+  background: rgba(11,34,64,.85);
+  color: var(--sand-100);
+}
+.gcard-rating {
+  right: 12px;
+  background: var(--gold-100);
+  color: var(--ink-900);
+  letter-spacing: .04em;
+}
+.gcard-body {
+  padding: 16px 18px 18px;
+  display: flex; flex-direction: column; gap: 8px; flex: 1;
+}
+.gcard-name-row {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+}
+.gcard-name {
+  font-family: var(--font-zh);
+  font-weight: 500;
+  font-size: 20px;
+  letter-spacing: .04em;
+  color: var(--fg-1);
+}
+.gcard-en {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--fg-3);
+}
+.gcard-meta {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: .08em;
+  color: var(--fg-3);
+}
+.gcard-bio {
+  font-family: var(--font-zh);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--fg-2);
+  margin: 0;
+  text-wrap: pretty;
+  flex: 1;
+}
+.gcard-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+/* .gcard-tag 樣式定義在 styles.css (全站共用) */
+.gcard-foot {
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line-1);
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--fg-3);
+}
+.gcard-cta {
+  font-family: var(--font-zh);
+  font-size: 13px;
+  color: var(--ink-900);
+  border-bottom: 1.5px solid var(--gold-600);
+  padding-bottom: 1px;
+}
+.gcard-cta:hover { color: var(--gold-700); }
+
+/* ---------- Pagination (reuse) ---------- */
+.guides-pager {
+  display: flex; justify-content: center; gap: 6px;
+  padding: clamp(20px, 3vw, 36px) 0 clamp(32px, 5vw, 64px);
+}
+.guides-pager a, .guides-pager span {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 38px; height: 38px;
+  font-family: var(--font-en); font-size: 14px;
+  color: var(--fg-2);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-md);
+  padding: 0 12px;
+  text-decoration: none;
+  transition: all .2s var(--ease-out);
+}
+.guides-pager a:hover { border-color: var(--gold-600); color: var(--ink-900); }
+.guides-pager .is-active {
+  background: var(--ink-900); color: var(--sand-100); border-color: var(--ink-900);
+}
+
+/* ============================================================
+   GUIDE PROFILE PAGE
+   ============================================================ */
+
+.gp-head {
+  padding: clamp(28px, 4vw, 48px) 0 clamp(20px, 3vw, 28px);
+  background: linear-gradient(180deg, var(--sand-50) 0%, var(--bg) 100%);
+}
+
+/* hero card (GuideCardB style — horizontal) */
+.gp-hero {
+  display: grid;
+  grid-template-columns: clamp(180px, 22vw, 240px) 1fr auto;
+  gap: clamp(20px, 3vw, 36px);
+  align-items: center;
+  background: var(--bg-raised);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-lg);
+  padding: clamp(20px, 2.6vw, 32px);
+  box-shadow: var(--shadow-2);
+}
+.gp-portrait {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--gold-400);
+  background: var(--sand-100);
+}
+.gp-portrait img { width: 100%; height: 100%; object-fit: cover; }
+.gp-hero-meta { min-width: 0; }
+.gp-name-row {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; margin: 8px 0;
+}
+.gp-name {
+  font-family: var(--font-zh);
+  font-weight: 500;
+  font-size: clamp(28px, 3.6vw, 40px);
+  letter-spacing: .04em;
+  color: var(--fg-1);
+  margin: 0;
+}
+.gp-en {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-size: clamp(16px, 1.6vw, 20px);
+  color: var(--gold-700);
+}
+.gp-rating {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--gold-700);
+  background: var(--gold-50);
+  border: 1px solid var(--gold-300);
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+}
+.gp-meta-row {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: .08em;
+  color: var(--fg-3);
+}
+.gp-bio {
+  font-family: var(--font-zh);
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--fg-2);
+  margin: 12px 0;
+  text-wrap: pretty;
+}
+.gp-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.gp-actions {
+  display: flex; flex-direction: column; gap: 10px;
+}
+@media (max-width: 760px) {
+  .gp-hero {
+    grid-template-columns: clamp(120px, 30vw, 160px) 1fr;
+    grid-template-areas: "portrait meta" "actions actions";
+  }
+  .gp-portrait { grid-area: portrait; }
+  .gp-hero-meta { grid-area: meta; }
+  .gp-actions { grid-area: actions; flex-direction: row; flex-wrap: wrap; }
+}
+@media (max-width: 480px) {
+  .gp-hero { grid-template-columns: 1fr; grid-template-areas: "portrait" "meta" "actions"; text-align: center; }
+  .gp-portrait { width: 140px; justify-self: center; }
+  .gp-name-row, .gp-tags { justify-content: center; }
+  .gp-actions { justify-content: center; }
+}
+
+/* ---------- Quote band ---------- */
+.gp-quote {
+  padding: clamp(36px, 5vw, 64px) 0;
+  background: var(--sand-50);
+  border-top: 1px solid var(--line-gold-soft);
+  border-bottom: 1px solid var(--line-gold-soft);
+}
+.gp-quote-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+}
+.gp-quote-inner::before {
+  content: "“";
+  position: absolute;
+  top: -44px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-en);
+  font-size: 96px;
+  line-height: 1;
+  color: var(--gold-300);
+}
+.gp-quote-text {
+  font-family: var(--font-zh);
+  font-style: italic;
+  font-size: clamp(18px, 2vw, 24px);
+  line-height: 1.7;
+  color: var(--ink-900);
+  margin: 0;
+  text-wrap: pretty;
+}
+.gp-quote-by {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--fg-3);
+  margin-top: 16px;
+  letter-spacing: .04em;
+}
+
+/* ---------- About + facts side panel ---------- */
+.gp-about {
+  padding: clamp(40px, 5vw, 72px) 0;
+}
+.gp-about-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+@media (max-width: 840px) { .gp-about-grid { grid-template-columns: 1fr; } }
+
+.gp-about-text {
+  font-family: var(--font-zh);
+  font-size: clamp(15px, 1.5vw, 17px);
+  line-height: 1.95;
+  color: var(--fg-1);
+}
+.gp-about-text > * + * { margin-top: 1.2em; }
+.gp-about-text p { margin: 0; text-wrap: pretty; }
+
+.gp-facts {
+  background: var(--bg-raised);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-md);
+  padding: 22px;
+}
+.gp-facts h4 {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: .22em;
+  color: var(--gold-700);
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+.gp-facts dl {
+  margin: 0; display: flex; flex-direction: column; gap: 10px;
+}
+.gp-facts > dl > div {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--font-zh); font-size: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--line-1);
+}
+.gp-facts > dl > div:last-child { border-bottom: 0; padding-bottom: 0; }
+.gp-facts dt { color: var(--fg-3); }
+.gp-facts dd { margin: 0; color: var(--fg-1); font-weight: 500; }
+.gp-facts .price { color: var(--gold-700); font-family: var(--font-en); font-style: italic; font-size: 16px; }
+
+/* ---------- Routes ---------- */
+.gp-routes {
+  padding: clamp(40px, 5vw, 72px) 0;
+  background: var(--sand-50);
+  border-top: 1px solid var(--line-gold-soft);
+}
+.gp-routes-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: clamp(16px, 2vw, 24px);
+}
+@media (max-width: 840px) { .gp-routes-grid { grid-template-columns: 1fr; } }
+.route-card {
+  background: var(--bg-raised);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-md);
+  padding: clamp(18px, 2.4vw, 24px);
+  display: flex; flex-direction: column; gap: 8px;
+  transition: all .28s var(--ease-out);
+}
+.route-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-2);
+  border-color: var(--gold-400);
+}
+.route-num {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-size: 28px;
+  color: var(--gold-600);
+  line-height: 1;
+}
+.route-title {
+  font-family: var(--font-zh);
+  font-weight: 500;
+  font-size: 19px;
+  letter-spacing: .04em;
+  color: var(--fg-1);
+}
+.route-desc {
+  font-family: var(--font-zh);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--fg-2);
+  margin: 0;
+  flex: 1;
+  text-wrap: pretty;
+}
+.route-foot {
+  margin-top: 6px; padding-top: 10px;
+  border-top: 1px dashed var(--line-1);
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--font-sans); font-size: 12px;
+}
+.route-dur { color: var(--fg-3); letter-spacing: .04em; }
+.route-link {
+  font-family: var(--font-zh); font-size: 13px; color: var(--ink-900);
+  border-bottom: 1.5px solid var(--gold-600); padding-bottom: 1px;
+}
+
+/* ---------- Articles by guide ---------- */
+.gp-journal {
+  padding: clamp(40px, 5vw, 72px) 0;
+}
+.gp-journal-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(20px, 3vw, 32px);
+}
+@media (max-width: 720px) { .gp-journal-grid { grid-template-columns: 1fr; } }
+
+/* 嚮導頁文章卡片 (與文章頁的 .rel-card 同樣式,獨立定義避免跨頁 css 依賴) */
+.gp-journal .rel-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-raised);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  transition: transform .28s var(--ease-out), box-shadow .28s var(--ease-out);
+}
+.gp-journal .rel-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-2);
+}
+.gp-journal .rel-thumb {
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: var(--sand-100);
+}
+.gp-journal .rel-thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .6s var(--ease-out);
+}
+.gp-journal .rel-card:hover .rel-thumb img { transform: scale(1.05); }
+.gp-journal .rel-body { padding: 16px 18px 18px; }
+.gp-journal .rel-cat {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gold-700);
+}
+.gp-journal .rel-body h3 {
+  font-family: var(--font-zh);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: .04em;
+  color: var(--fg-1);
+  margin: 6px 0 10px;
+}
+.gp-journal .rel-meta {
+  font-family: var(--font-zh);
+  font-size: 13px;
+  color: var(--fg-3);
+  margin: 0;
+}
+
+/* ---------- Reviews ---------- */
+.gp-reviews {
+  padding: clamp(40px, 5vw, 72px) 0;
+  background: var(--ink-900);
+  color: var(--fg-on-dark);
+}
+.gp-reviews .eyebrow { color: var(--gold-300); }
+.gp-reviews .h-section { color: var(--sand-100); }
+.gp-reviews-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(16px, 2vw, 24px);
+  margin-top: clamp(20px, 2.5vw, 32px);
+}
+@media (max-width: 720px) { .gp-reviews-grid { grid-template-columns: 1fr; } }
+.review-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(221,193,139,.2);
+  border-radius: var(--r-md);
+  padding: clamp(18px, 2.4vw, 24px);
+}
+.review-head {
+  display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;
+}
+.review-name {
+  font-family: var(--font-zh); font-size: 15px; font-weight: 500;
+  color: var(--sand-100);
+}
+.review-stars {
+  font-family: var(--font-sans); font-size: 13px; color: var(--gold-300); letter-spacing: .1em;
+}
+.review-text {
+  font-family: var(--font-zh); font-size: 14px; line-height: 1.85;
+  color: var(--fg-on-dark-2); margin: 0 0 10px;
+  text-wrap: pretty;
+}
+.review-when {
+  font-family: var(--font-en); font-style: italic; font-size: 12px;
+  color: rgba(245,239,227,.55);
+}
+
+/* ---------- FAQ ---------- */
+.gp-faq {
+  padding: clamp(40px, 5vw, 72px) 0;
+}
+.gp-faq-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.gp-faq-item {
+  background: var(--bg-raised);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.gp-faq-item.is-open { border-color: var(--gold-400); box-shadow: var(--shadow-1); }
+.gp-faq-q {
+  width: 100%;
+  background: transparent; border: 0; cursor: pointer;
+  padding: 16px 22px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  font-family: var(--font-zh); font-size: 15px; font-weight: 500;
+  color: var(--fg-1);
+  text-align: left;
+}
+.gp-faq-icon { color: var(--fg-3); transition: transform .28s var(--ease-out); }
+.gp-faq-item.is-open .gp-faq-icon { transform: rotate(45deg); color: var(--gold-700); }
+.gp-faq-a {
+  max-height: 0; overflow: hidden;
+  padding: 0 22px;
+  font-family: var(--font-zh); font-size: 14px; line-height: 1.85;
+  color: var(--fg-2);
+  transition: max-height .35s var(--ease-out), padding .25s var(--ease-out);
+}
+.gp-faq-item.is-open .gp-faq-a { max-height: 400px; padding: 0 22px 16px; }
+
+/* ---------- Similar guides ---------- */
+.gp-similar {
+  padding: clamp(40px, 5vw, 72px) 0;
+  background: var(--sand-50);
+}
+
+/* ---------- Sticky CTA bar ---------- */
+.gp-sticky {
+  position: sticky;
+  bottom: 0;
+  background: var(--ink-900);
+  color: var(--sand-100);
+  border-top: 2px solid var(--gold-600);
+  z-index: 40;
+}
+.gp-sticky-inner {
+  max-width: var(--container-w);
+  margin: 0 auto;
+  padding: 14px clamp(16px, 3vw, 32px);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.gp-sticky-text {
+  display: flex; flex-direction: column; line-height: 1.4;
+}
+.gp-sticky-title {
+  font-family: var(--font-zh); font-size: 16px; font-weight: 500;
+  color: var(--sand-100);
+}
+.gp-sticky-sub {
+  font-family: var(--font-sans); font-size: 11px; letter-spacing: .08em;
+  color: rgba(245,239,227,.65);
+}
+.gp-sticky .btn {
+  background: var(--gold-600); color: var(--ink-900); border-color: var(--gold-600);
+  flex-shrink: 0;
+}
+.gp-sticky .btn:hover { background: var(--gold-400); border-color: var(--gold-400); }
+@media (max-width: 480px) {
+  .gp-sticky-sub { display: none; }
+}

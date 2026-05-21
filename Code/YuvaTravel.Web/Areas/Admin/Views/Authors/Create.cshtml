@@ -1,0 +1,20 @@
+@model AuthorCreateOrEdit
+@{
+    ViewBag.Title = StrText.Create + StrText.Authors;
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.ArticleInfo"
+                    resource="@StrText.Authors"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Create)" method="post" enctype="multipart/form-data">
+    <section class="content">
+        <partial name="_Form" model="Model" />
+        <div class="row"><div class="col-12">
+            <a asp-action="@nameof(StrText.Index)" class="btn btn-secondary">@StrText.ReturnIndex</a>
+            <input type="submit" value="@StrText.Save" class="btn btn-success float-right">
+        </div></div>
+    </section>
+</form>

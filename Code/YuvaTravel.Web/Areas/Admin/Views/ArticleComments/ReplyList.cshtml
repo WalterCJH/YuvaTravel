@@ -1,0 +1,75 @@
+@model ArticleCommentCreateOrEdit
+
+@{
+}
+
+<div class="row js-disabled js-comment-list">
+    <div class="col-12">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    </div>
+    <div class="col-4">
+        <div class="form-group">
+            <label asp-for="CommentContent" class="control-label col-md-12"></label>
+            <input asp-for="CommentContent" class="form-control" />
+            <span asp-validation-for="CommentContent" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-1">
+        <div class="form-group">
+            <label asp-for="CommentTime" class="control-label col-md-12"></label>
+            <input asp-for="CommentTime" class="form-control js-datepicker" />
+            <span asp-validation-for="CommentTime" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-1">
+        <div class="form-group">
+            <label asp-for="CommentUserId" class="control-label col-md-12"></label>
+            <input asp-for="CommentUserId" class="form-control" />
+            <span asp-validation-for="CommentUserId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="col-3">
+        <div class="form-group">
+            <label asp-for="ReplyContent" class="control-label col-md-12"></label>
+            <input asp-for="ReplyContent" class="form-control" />
+            <span asp-validation-for="ReplyContent" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-1">
+        <div class="form-group">
+            <label asp-for="ReplyTime" class="control-label col-md-12"></label>
+            <input asp-for="ReplyTime" class="form-control js-datepicker" />
+            <span asp-validation-for="ReplyTime" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-1">
+        <div class="form-group">
+            <label asp-for="ReplyUserId" class="control-label col-md-12"></label>
+            <input asp-for="ReplyUserId" class="form-control" />
+            <span asp-validation-for="ReplyUserId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-1 pr-0">
+        <div class="mt-4">
+            @if (Model.IsReply)
+            {
+                <button type="button" class="btn btn-info btn-sm js-comment-reply" data-toggle="modal" data-target="#modal-lg" data-articlecommentid="@Model.ArticleCommentId">
+                    <i class="fas fa-pencil-alt">
+                    </i>
+                    @StrText.Reply
+                </button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-primary btn-sm js-comment-details" data-toggle="modal" data-target="#modal-lg" data-articlecommentid="@Model.ArticleCommentId">
+                    <i class="fas fa-folder">
+                    </i>
+                    @StrText.Details
+                </button>
+            }
+        </div>
+    </div>
+</div>
+
+

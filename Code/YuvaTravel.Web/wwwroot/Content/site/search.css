@@ -1,0 +1,334 @@
+/* =====================================================================
+   YuvaTravel 域見 — Search page styles
+   Builds on styles.css + category.css. Layout: hero search → trending
+   keywords → hot tags → editor picks → tips. Empty-state oriented.
+   ===================================================================== */
+
+/* ----------------------- SEARCH HERO ---------------------------- */
+.search-hero {
+  position: relative;
+  padding: clamp(56px, 8vw, 112px) 0 clamp(40px, 5vw, 72px);
+  background:
+    radial-gradient(900px 360px at 50% 0%, rgba(201,169,97,.18), transparent 60%),
+    linear-gradient(180deg, var(--sand-50) 0%, var(--sand-100) 100%);
+  border-bottom: 1px solid var(--line-gold-soft);
+  overflow: hidden;
+}
+.search-hero::before {
+  /* subtle decorative arc behind the title */
+  content: "";
+  position: absolute;
+  inset: auto auto -120px 50%;
+  width: 720px;
+  height: 720px;
+  border-radius: 50%;
+  border: 1px dashed var(--line-gold-soft);
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: .6;
+}
+.search-hero-inner {
+  position: relative;
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto;
+  padding-left: clamp(20px, 3vw, 32px);
+  padding-right: clamp(20px, 3vw, 32px);
+}
+.search-hero-title {
+  font-family: var(--font-zh);
+  font-weight: 500;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1.15;
+  letter-spacing: .04em;
+  color: var(--fg-1);
+  margin: 14px 0 18px;
+}
+.search-hero-title .en {
+  display: block;
+  font-family: var(--font-en);
+  font-style: italic;
+  font-weight: 400;
+  font-size: .42em;
+  color: var(--gold-700);
+  letter-spacing: .12em;
+  margin-top: 10px;
+}
+.search-hero-lede {
+  font-family: var(--font-zh);
+  font-size: clamp(15px, 1.4vw, 17px);
+  line-height: 1.85;
+  color: var(--fg-2);
+  margin-bottom: clamp(28px, 3vw, 40px);
+  text-wrap: pretty;
+}
+
+/* search bar */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1.5px solid var(--ink-900);
+  border-radius: var(--r-pill);
+  padding: 8px 8px 8px 22px;
+  box-shadow: var(--shadow-2);
+  max-width: 620px;
+  margin: 0 auto;
+  transition: box-shadow .24s var(--ease-out), border-color .24s var(--ease-out);
+}
+.search-bar:focus-within {
+  border-color: var(--gold-600);
+  box-shadow: 0 0 0 4px rgba(201,169,97,.18), var(--shadow-2);
+}
+.search-icon {
+  display: inline-flex;
+  color: var(--ink-500);
+  flex-shrink: 0;
+}
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-zh);
+  font-size: clamp(15px, 1.5vw, 18px);
+  color: var(--fg-1);
+  padding: 12px 6px;
+  letter-spacing: .04em;
+  min-width: 0;
+}
+.search-input::placeholder {
+  color: var(--ink-400);
+  font-family: var(--font-zh);
+}
+.search-submit {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  background: var(--ink-900);
+  color: var(--sand-100);
+  border: none;
+  border-radius: var(--r-pill);
+  padding: 12px 22px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .2s var(--ease-out);
+}
+.search-submit:hover { background: var(--gold-700); }
+
+/* recent searches under bar */
+.search-recent {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.search-recent-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--fg-3);
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+.recent-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-zh);
+  font-size: 13px;
+  color: var(--fg-2);
+  background: #fff;
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-pill);
+  padding: 5px 10px 5px 14px;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  transition: border-color .2s, color .2s;
+}
+.recent-pill i {
+  font-style: normal;
+  color: var(--ink-300);
+  font-size: 11px;
+  width: 16px; height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--sand-100);
+}
+.recent-pill:hover {
+  border-color: var(--gold-600);
+  color: var(--ink-900);
+}
+.recent-clear {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--fg-3);
+  letter-spacing: .12em;
+  border-bottom: 1px dashed var(--line-1);
+  padding-bottom: 1px;
+  margin-left: 4px;
+}
+.recent-clear:hover { color: var(--ink-900); border-bottom-color: var(--gold-600); }
+
+/* ----------------------- BLOCK SHARED --------------------------- */
+.search-block {
+  padding: clamp(48px, 6vw, 80px) 0 clamp(32px, 4vw, 48px);
+}
+/* .section-head / .titling .eyebrow / EDITOR PICKS 已移至共用 styles.css
+   (首頁與搜尋頁共用同一個區塊的 HTML 與 CSS) */
+.block-side-note {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--fg-3);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+/* ----------------------- KEYWORD RANK --------------------------- */
+.keyword-rank {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 clamp(28px, 4vw, 64px);
+  border-top: 1px solid var(--line-gold-soft);
+}
+@media (max-width: 720px) {
+  .keyword-rank { grid-template-columns: 1fr; }
+}
+.keyword-rank > li {
+  border-bottom: 1px solid var(--line-1);
+}
+.keyword-rank a {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 18px;
+  padding: clamp(14px, 1.6vw, 20px) 4px;
+  transition: padding .2s var(--ease-out), color .2s var(--ease-out);
+}
+.keyword-rank a:hover {
+  padding-left: 14px;
+}
+.keyword-rank a:hover .kr-text { color: var(--gold-700); }
+.keyword-rank a:hover .kr-num { color: var(--gold-600); }
+.kr-num {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(22px, 2.4vw, 28px);
+  color: var(--ink-300);
+  letter-spacing: .04em;
+  line-height: 1;
+  width: 48px;
+  transition: color .2s var(--ease-out);
+}
+.kr-text {
+  font-family: var(--font-zh);
+  font-weight: 500;
+  font-size: clamp(17px, 1.8vw, 21px);
+  color: var(--fg-1);
+  letter-spacing: .04em;
+  transition: color .2s var(--ease-out);
+}
+.kr-trend {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+.kr-trend.up   { color: var(--gold-700); }
+.kr-trend.flat { color: var(--fg-3); }
+.kr-trend.down { color: var(--ink-400); }
+
+/* ----------------------- HOT TAGS reuse + tweak ----------------- */
+.search-tags { background: var(--sand-50); }
+
+/* EDITOR PICKS 區塊樣式已移至共用 styles.css(首頁/搜尋頁共用) */
+
+/* ----------------------- TIPS ----------------------------------- */
+.search-tips {
+  padding: clamp(48px, 6vw, 88px) 0;
+  background: var(--ink-900);
+  color: var(--fg-on-dark);
+}
+.search-tips .eyebrow { color: var(--gold-300); }
+.search-tips .h-section { color: var(--sand-100); }
+.search-tips-inner {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: clamp(28px, 4vw, 64px);
+  align-items: flex-start;
+}
+@media (max-width: 760px) {
+  .search-tips-inner { grid-template-columns: 1fr; }
+}
+.tips-titling .eyebrow { display: block; margin-bottom: 8px; }
+.tips-titling .h-section { margin-top: 4px; }
+
+.tips-list {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2vw, 28px);
+}
+.tips-list > li {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 18px;
+  align-items: flex-start;
+  border-top: 1px dashed rgba(245,239,227,.18);
+  padding-top: clamp(14px, 1.6vw, 22px);
+}
+.tips-list > li:first-child {
+  border-top-color: var(--gold-600);
+  border-top-style: solid;
+}
+.tip-num {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(28px, 3vw, 36px);
+  color: var(--gold-300);
+  letter-spacing: .04em;
+  line-height: 1;
+}
+.tips-list h4 {
+  font-family: var(--font-zh);
+  font-weight: 500;
+  font-size: clamp(18px, 1.8vw, 22px);
+  color: var(--sand-100);
+  letter-spacing: .04em;
+  margin: 0 0 8px;
+}
+.tips-list h4 em {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold-300);
+  font-size: 1.05em;
+  margin: 0 4px;
+}
+.tips-list p {
+  font-family: var(--font-zh);
+  font-size: 14px;
+  line-height: 1.8;
+  color: rgba(245,239,227,.78);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* ----------------------- RWD tweaks ----------------------------- */
+@media (max-width: 520px) {
+  .search-hero { padding-top: 40px; padding-bottom: 32px; }
+  .search-bar { flex-wrap: wrap; padding: 10px; }
+  .search-input { width: 100%; padding: 10px 4px; }
+  .search-submit { width: 100%; }
+}

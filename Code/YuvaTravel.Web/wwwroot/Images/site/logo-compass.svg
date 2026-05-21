@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:x="http://ns.adobe.com/Extensibility/1.0/" xmlns:graph="http://ns.adobe.com/Graphs/1.0/" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" id="YuvaTravel_Logo_05_Compass" x="0px" y="0px" width="480px" height="192px" viewBox="0 0 480 192" enable-background="new 0 0 480 192" xml:space="preserve">
+
+  
+  <switch>
+    <g xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" _:extraneous="self"></g>
+  </switch>
+
+  
+  <g id="Layer_1_Compass_Outer_Ring" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" _:layer="yes" _:dimmedPercent="50" display="inline">
+    <title>Layer 1: Compass Outer Ring</title>
+
+    <circle id="ring_outer" cx="96" cy="96" r="68" fill="none" stroke="#0B2240" stroke-width="1.0" opacity="0.32"></circle>
+
+  </g>
+
+  
+  <g id="Layer_2_Compass_Star" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" _:layer="yes" _:dimmedPercent="50" display="inline">
+    <title>Layer 2: Compass Star</title>
+
+    
+    <path id="star_main" d="M96,28&#xA;         C98,56 112,76 144,80&#xA;         C112,84 98,104 96,132&#xA;         C94,104 80,84 48,80&#xA;         C80,76 94,56 96,28 Z" fill="#0B2240" stroke="none"></path>
+
+    
+    <path id="star_ne" d="M96,28 C96,52 106,68 120,60 C110,66 96,76 96,80 Z" fill="#0B2240" opacity="0.18"></path>
+    
+    <path id="star_se" d="M144,80 C120,80 104,90 112,106 C106,96 96,80 96,80 Z" fill="#0B2240" opacity="0.18"></path>
+    
+    <path id="star_sw" d="M96,132 C96,108 86,92 72,100 C82,94 96,80 96,80 Z" fill="#0B2240" opacity="0.18"></path>
+    
+    <path id="star_nw" d="M48,80 C72,80 88,70 80,54 C86,64 96,80 96,80 Z" fill="#0B2240" opacity="0.18"></path>
+
+  </g>
+
+  
+  <g id="Layer_3_Center_Dot" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" _:layer="yes" _:dimmedPercent="50" display="inline">
+    <title>Layer 3: Center Dot (Gold)</title>
+
+    <circle id="dot_center" cx="96" cy="80" r="7" fill="#A08848" stroke="none"></circle>
+
+  </g>
+
+  
+  <g id="Layer_4_North_Marker" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" _:layer="yes" _:dimmedPercent="50" display="inline">
+    <title>Layer 4: North Marker</title>
+
+    <text id="text_N" x="96" y="18" text-anchor="middle" font-family="&#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif" font-size="12" font-weight="300" fill="#A08848">N</text>
+
+  </g>
+
+  
+  <g id="Layer_5_Chinese_Logotype" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" _:layer="yes" _:dimmedPercent="50" display="inline">
+    <title>Layer 5: Chinese Logotype 域見</title>
+
+    <text id="text_yujan" x="196" y="108" font-family="&#39;Songti SC&#39;, &#39;STSong&#39;, &#39;SimSun&#39;, &#39;Noto Serif SC&#39;, Georgia, &#39;Times New Roman&#39;, serif" font-size="40" font-weight="300" letter-spacing="2" fill="#0B2240">域見</text>
+
+  </g>
+
+  
+  <g id="Layer_6_Gold_Divider" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" _:layer="yes" _:dimmedPercent="50" display="inline">
+    <title>Layer 6: Gold Divider Line</title>
+
+    <line id="line_divider" x1="196" y1="118" x2="462" y2="118" stroke="#A08848" stroke-width="1.0" fill="none"></line>
+
+  </g>
+
+  
+  <g id="Layer_7_Brand_Name" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" _:layer="yes" _:dimmedPercent="50" display="inline">
+    <title>Layer 7: Brand Name YUVATRAVEL</title>
+
+    <text id="text_yuvatravel" x="196" y="142" font-family="&#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif" font-size="17" font-weight="300" letter-spacing="7" fill="#0B2240">YUVATRAVEL</text>
+
+  </g>
+
+  
+  <g id="Layer_8_Tagline" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" _:layer="yes" _:dimmedPercent="50" display="inline">
+    <title>Layer 8: Tagline PRIVATE CURATION</title>
+
+    <text id="text_tagline" x="196" y="164" font-family="&#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif" font-size="11" font-weight="300" letter-spacing="4" fill="#A08848">PRIVATE CURATION</text>
+
+  </g>
+
+  
+  <g id="Layer_9_Guides" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:_="http://ns.adobe.com/AdobeIllustrator/10.0/" _:layer="yes" _:dimmedPercent="50" display="none">
+    <title>Layer 9: Guides (Safe Area)</title>
+
+    
+    <rect id="guide_outer" x="0" y="0" width="480" height="192" fill="none" stroke="#FF0000" stroke-width="0.5" stroke-dasharray="6,4"></rect>
+    
+    <rect id="guide_margin" x="8" y="8" width="464" height="176" fill="none" stroke="#0066FF" stroke-width="0.5" stroke-dasharray="4,4"></rect>
+    
+    <line id="guide_text_align" x1="196" y1="0" x2="196" y2="192" stroke="#00AA00" stroke-width="0.5" stroke-dasharray="3,3"></line>
+    
+    <line id="guide_center_h" x1="0" y1="96" x2="480" y2="96" stroke="#00AA00" stroke-width="0.5" stroke-dasharray="3,3"></line>
+
+  </g>
+
+</svg>

@@ -1,0 +1,389 @@
+﻿@model GuideProfileDto
+@{
+    var hasGuide = Model != null && Model.GuideId != Guid.Empty;
+    var regionLabel = Model?.Regions != null && Model.Regions.Count > 0
+        ? string.Join(" · ", Model.Regions.Select(r => r.Name))
+        : "";
+    ViewBag.Title = hasGuide ? $"{Model.Name} {Model.NameEn} · {regionLabel}嚮導" : "嚮導";
+    var host = ViewBag.Host as string ?? $"{Context.Request.Scheme}://{Context.Request.Host}";
+    var profileUrl = $"{host}{Context.Request.Path}";
+    var portraitImage = string.IsNullOrEmpty(Model?.PortraitUrl)
+        ? ""
+        : (Model.PortraitUrl.StartsWith("http") ? Model.PortraitUrl : $"{host}{Model.PortraitUrl}");
+}
+
+@section head_scripts {
+    <link rel="stylesheet" href="~/Content/site/guides.css" />
+
+    @if (hasGuide)
+    {
+        @* JSON-LD: Person (嚮導) *@
+        <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "Person",
+          "name": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Name ?? "")),
+          "alternateName": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.NameEn ?? "")),
+          "description": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Bio ?? "")),
+          "image": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(portraitImage)),
+          "url": "@profileUrl",
+          "knowsAbout": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Tags ?? new List<string>())),
+          "knowsLanguage": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Languages?.Split(new[] { '·', '/', ',', ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim()).ToArray() ?? Array.Empty<string>())),
+          "workLocation": {
+            "@@type": "Place",
+            "name": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.City ?? ""))
+          },
+          "worksFor": {
+            "@@type": "Organization",
+            "name": "@StrText.UserWebName YuvaTravel",
+            "url": "@host"
+          }@(Model.ReviewCount > 0 ? "," : "")
+          @if (Model.ReviewCount > 0)
+          {
+              <text>
+          "aggregateRating": {
+            "@@type": "AggregateRating",
+            "ratingValue": "@Model.Rating.ToString("0.0")",
+            "reviewCount": @Model.ReviewCount,
+            "bestRating": "5",
+            "worstRating": "1"
+          }
+              </text>
+          }
+        }
+        </script>
+
+        @* JSON-LD: BreadcrumbList *@
+        <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@@type": "ListItem", "position": 1, "name": "首頁", "item": "@host/" },
+            { "@@type": "ListItem", "position": 2, "name": "嚮導", "item": "@host/guides" }@(string.IsNullOrEmpty(Model.City) ? "" : ",")
+            @if (!string.IsNullOrEmpty(Model.City))
+            {
+                <text>
+            { "@@type": "ListItem", "position": 3, "name": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.City)), "item": "@host/guides/@Model.CityCode" },
+            { "@@type": "ListItem", "position": 4, "name": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Name + " " + Model.NameEn)), "item": "@profileUrl" }
+                </text>
+            }
+          ]
+        }
+        </script>
+    }
+}
+
+@if (!hasGuide)
+{
+    <section class="gp-head">
+        <div class="container">
+            <p style="text-align:center; padding: 80px 0; color: rgba(245,239,227,.55);">目前沒有嚮導資料。</p>
+        </div>
+    </section>
+}
+else
+{
+    <section class="gp-head">
+        <div class="container">
+            <nav class="crumbs" aria-label="麵包屑">
+                <a href="/">首頁</a><span>/</span>
+                <a href="/Guides">嚮導</a><span>/</span>
+                <span class="crumb-current"><span>@Model.Name</span> @Model.NameEn</span>
+            </nav>
+
+            <article class="gp-hero">
+                <div class="gp-portrait">
+                    <img src="@(string.IsNullOrEmpty(Model.PortraitUrl) ? "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80" : Model.PortraitUrl)" alt="@Model.Name 的肖像" loading="lazy" decoding="async" />
+                </div>
+                <div class="gp-hero-meta">
+                    <div class="eyebrow">GUIDE @(Model.Regions.Count == 0 ? "" : "· " + string.Join(" · ", Model.Regions.Select(r => r.Name)))</div>
+                    <div class="gp-name-row">
+                        <h1 class="gp-name"><span>@Model.Name</span></h1>
+                        @if (!string.IsNullOrEmpty(Model.NameEn))
+                        {
+                            <span class="gp-en">@Model.NameEn</span>
+                        }
+                        <span class="gp-rating">★ @Model.Rating.ToString("0.0") · @Model.ReviewCount 則</span>
+                    </div>
+                    <div class="gp-meta-row">@Model.YearsOfExperience 年在地經驗 · @Model.Languages @(string.IsNullOrEmpty(Model.ServiceFormat) ? "" : "· " + Model.ServiceFormat)</div>
+                    @if (!string.IsNullOrEmpty(Model.Bio))
+                    {
+                        <p class="gp-bio">@Model.Bio</p>
+                    }
+                    @if (Model.Tags.Count > 0)
+                    {
+                        <div class="gp-tags">
+                            @foreach (var tag in Model.Tags)
+                            {
+                                <span class="gcard-tag">#@tag</span>
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="gp-actions">
+                    <a href="#" class="btn">媒合<span>@Model.Name</span> →</a>
+                    @* <a href="#" class="btn-ghost">收藏</a> *@
+                </div>
+            </article>
+        </div>
+    </section>
+
+    @if (!string.IsNullOrEmpty(Model.QuoteText))
+    {
+        <section class="gp-quote">
+            <div class="container">
+                <div class="gp-quote-inner">
+                    <p class="gp-quote-text">@Model.QuoteText</p>
+                    @if (!string.IsNullOrEmpty(Model.QuoteBy))
+                    {
+                        <div class="gp-quote-by">— @Model.QuoteBy</div>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.LongBio))
+    {
+        <section class="gp-about">
+            <div class="container">
+                <div class="section-head">
+                    <div class="titling">
+                        <div class="eyebrow">ABOUT · 關於<span>@Model.Name</span></div>
+                        <h2 class="h-section">@(string.IsNullOrEmpty(Model.QuoteBy) ? Model.Name : Model.QuoteBy)的故事</h2>
+                    </div>
+                </div>
+                <div class="gp-about-grid">
+                    <div class="gp-about-text">
+                        @Html.Raw(Model.LongBio)
+                    </div>
+                    <aside class="gp-facts">
+                        <h4>FACTS · 嚮導資訊</h4>
+                        <dl>
+                            @if (Model.Regions.Count > 0)
+                            {
+                                <div><dt>在地</dt><dd>@string.Join(" · ", Model.Regions.Select(r => r.Name)) @Model.YearsOfExperience 年</dd></div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Languages))
+                            {
+                                <div><dt>語言</dt><dd>@Model.Languages</dd></div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.ServiceFormat))
+                            {
+                                <div><dt>服務形式</dt><dd>@Model.ServiceFormat</dd></div>
+                            }
+                            @if (Model.MinPeople.HasValue || Model.MaxPeople.HasValue)
+                            {
+                                <div><dt>適合人數</dt><dd>@Model.MinPeople–@Model.MaxPeople 人</dd></div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.ResponseTime))
+                            {
+                                <div><dt>回覆時間</dt><dd>@Model.ResponseTime</dd></div>
+                            }
+                            @if (Model.StartingPrice.HasValue)
+                            {
+                                <div><dt>起價</dt><dd class="price">NT$ @Model.StartingPrice.Value.ToString("N0")</dd></div>
+                            }
+                        </dl>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    }
+
+    @if (Model.Routes.Count > 0)
+    {
+        <section class="gp-routes">
+            <div class="container">
+                <div class="section-head">
+                    <div class="titling">
+                        <div class="eyebrow">ROUTES · 招牌路線</div>
+                        <h2 class="h-section"><span>@Model.Name</span> 帶你走的路線</h2>
+                    </div>
+                    <span class="more-static">@Model.Routes.Count 條精選 · 可客製</span>
+                </div>
+                <div class="gp-routes-grid">
+                    @for (int i = 0; i < Model.Routes.Count; i++)
+                    {
+                        var route = Model.Routes[i];
+                        <article class="route-card">
+                            <span class="route-num">@((i + 1).ToString("00"))</span>
+                            <h3 class="route-title">@route.Title</h3>
+                            <p class="route-desc">@route.Description</p>
+                            <div class="route-foot">
+                                <span class="route-dur">@route.Duration</span>
+                                @if (!string.IsNullOrEmpty(route.Url))
+                                {
+                                    <a href="@route.Url" class="route-link">看路線 →</a>
+                                }
+                            </div>
+                        </article>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    @if (Model.Articles.Count > 0)
+    {
+        <section class="gp-journal">
+            <div class="container">
+                <div class="section-head">
+                    <div class="titling">
+                        <div class="eyebrow">JOURNAL · <span>@Model.Name</span> 的旅誌</div>
+                        <h2 class="h-section">由 <span>@Model.Name</span> 記下的故事</h2>
+                    </div>
+                    <a href="/Category" class="more">共 @Model.ArticleTotalCount 篇 →</a>
+                </div>
+                <div class="gp-journal-grid">
+                    @foreach (var art in Model.Articles)
+                    {
+                        <a href="@StrPath.Article("", art.C)" class="rel-card">
+                            <div class="rel-thumb">
+                                <img src="@(string.IsNullOrEmpty(art.ImagePath) ? "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=80" : art.ImagePath)" alt="@art.ImageAlt" loading="lazy" decoding="async" />
+                            </div>
+                            <div class="rel-body">
+                                @if (Model.Regions.Count > 0)
+                                {
+                                    <span class="rel-cat">@string.Join(" · ", Model.Regions.Select(r => r.Name))</span>
+                                }
+                                <h3>@art.Title</h3>
+                                <p class="rel-meta">@(art.ReadTimeMin.HasValue ? $"{art.ReadTimeMin} 分鐘 · " : "")@art.ViewCounts.ToString("N0") 觀看 · @art.PublishDate</p>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    @if (Model.Reviews.Count > 0)
+    {
+        <section class="gp-reviews">
+            <div class="container">
+                <div class="section-head">
+                    <div class="titling">
+                        <div class="eyebrow">REVIEWS · 旅人的回饋</div>
+                        <h2 class="h-section">和<span>@Model.Name</span>走過的人說</h2>
+                    </div>
+                    <span class="more-static" style="color: rgba(245,239,227,.55);">★ @Model.Rating.ToString("0.0") · 共 @Model.ReviewCount 則</span>
+                </div>
+                <div class="gp-reviews-grid">
+                    @foreach (var rev in Model.Reviews)
+                    {
+                        <article class="review-card">
+                            <div class="review-head">
+                                <span class="review-name">@rev.ReviewerName @(string.IsNullOrEmpty(rev.ReviewerFrom) ? "" : "· " + rev.ReviewerFrom)</span>
+                                <span class="review-stars">@(new string('★', rev.Stars))@(new string('☆', Math.Max(0, 5 - rev.Stars)))</span>
+                            </div>
+                            <p class="review-text">@rev.Content</p>
+                            <span class="review-when">@rev.Display</span>
+                        </article>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    @if (Model.Faqs.Count > 0)
+    {
+        <section class="gp-faq">
+            <div class="container container-narrow">
+                <div class="section-head">
+                    <div class="titling">
+                        <div class="eyebrow">FAQ · 媒合<span>@Model.Name</span>常見問</div>
+                        <h2 class="h-section">關於<span>@Model.Name</span></h2>
+                    </div>
+                </div>
+                <ul class="gp-faq-list">
+                    @for (int i = 0; i < Model.Faqs.Count; i++)
+                    {
+                        var faq = Model.Faqs[i];
+                        var isOpen = i == 0;
+                        <li class="gp-faq-item @(isOpen ? "is-open" : "")">
+                            <button class="gp-faq-q" aria-expanded="@(isOpen ? "true" : "false")">
+                                <span>@faq.Question</span>
+                                <span class="gp-faq-icon">＋</span>
+                            </button>
+                            <div class="gp-faq-a">
+                                @Html.Raw(faq.Answer)
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </section>
+    }
+
+    @if (Model.SimilarGuides.Count > 0)
+    {
+        <section class="gp-similar">
+            <div class="container">
+                <div class="section-head">
+                    <div class="titling">
+                        <div class="eyebrow">SIMILAR · 你也可能想認識</div>
+                        <h2 class="h-section">類似風格的嚮導</h2>
+                    </div>
+                    <a href="/Guides" class="more">看全部嚮導 →</a>
+                </div>
+                <div class="guides-grid">
+                    @foreach (var g in Model.SimilarGuides)
+                    {
+                        <a href="@g.Url" class="gcard">
+                            <div class="gcard-portrait">
+                                <img src="@(string.IsNullOrEmpty(g.PortraitUrl) ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=900&q=80" : g.PortraitUrl)" alt="@g.Name" loading="lazy" decoding="async" />
+                                @if (g.Regions.Count > 0)
+                                {
+                                    <span class="gcard-city">@string.Join(" · ", g.Regions.Select(r => r.Name))</span>
+                                }
+                                <span class="gcard-rating">★ @g.Rating.ToString("0.0")</span>
+                            </div>
+                            <div class="gcard-body">
+                                <div class="gcard-name-row"><span class="gcard-name">@g.Name</span><span class="gcard-en">@g.NameEn</span></div>
+                                <div class="gcard-meta">@g.YearsOfExperience 年 · @g.Languages</div>
+                                <p class="gcard-bio">@g.Bio</p>
+                                <div class="gcard-tags">
+                                    @foreach (var t in g.Tags)
+                                    {
+                                        <span class="gcard-tag">#@t</span>
+                                    }
+                                </div>
+                                <div class="gcard-foot"><span>◉ @g.ArticleCount 篇旅誌</span><span class="gcard-cta">看嚮導 →</span></div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    <div class="gp-sticky">
+        <div class="gp-sticky-inner">
+            <div class="gp-sticky-text">
+                <span class="gp-sticky-title">準備和<span>@Model.Name</span>走一段嗎？</span>
+                @if (Model.StartingPrice.HasValue)
+                {
+                    <span class="gp-sticky-sub">從 NT$ @Model.StartingPrice.Value.ToString("N0") @(string.IsNullOrEmpty(Model.ServiceFormat) ? "" : "/ " + Model.ServiceFormat) @(string.IsNullOrEmpty(Model.ResponseTime) ? "" : "· " + Model.ResponseTime)</span>
+                }
+            </div>
+            <a href="#" class="btn">媒合<span>@Model.Name</span> →</a>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        (function () {
+            document.querySelectorAll('.gp-faq-item').forEach(function (it) {
+                var b = it.querySelector('.gp-faq-q');
+                if (!b) return;
+                b.addEventListener('click', function () {
+                    var open = !it.classList.contains('is-open');
+                    it.classList.toggle('is-open', open);
+                    b.setAttribute('aria-expanded', open ? 'true' : 'false');
+                });
+            });
+        })();
+    </script>
+}

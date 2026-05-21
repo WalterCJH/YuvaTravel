@@ -1,0 +1,103 @@
+<style>
+    .err-page {
+        min-height: calc(100vh - 320px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(60px, 10vh, 140px) 0;
+        background: linear-gradient(180deg, var(--paper, #f7f3ea) 0%, #fff 100%);
+    }
+    .err-inner {
+        max-width: 620px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 0 24px;
+    }
+    .err-mark {
+        width: 56px;
+        height: 56px;
+        opacity: .55;
+        margin-bottom: 24px;
+    }
+    .err-code {
+        font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+        font-size: clamp(96px, 18vw, 200px);
+        line-height: 1;
+        letter-spacing: -.02em;
+        color: var(--ink-900, #1a1814);
+        font-weight: 500;
+        margin: 0 0 12px;
+    }
+    .err-eyebrow {
+        font-family: 'Inter', sans-serif;
+        font-size: 12px;
+        letter-spacing: .25em;
+        text-transform: uppercase;
+        color: rgba(0,0,0,.45);
+        margin-bottom: 16px;
+    }
+    .err-title {
+        font-family: 'Noto Serif TC', serif;
+        font-size: clamp(24px, 3.5vw, 34px);
+        font-weight: 500;
+        color: var(--ink-900, #1a1814);
+        margin: 0 0 16px;
+    }
+    .err-lede {
+        font-size: 16px;
+        line-height: 1.85;
+        color: rgba(0,0,0,.6);
+        margin: 0 0 36px;
+    }
+    .err-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .err-suggest {
+        margin-top: 56px;
+        padding-top: 36px;
+        border-top: 1px solid rgba(0,0,0,.08);
+    }
+    .err-suggest-label {
+        font-size: 12px;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+        color: rgba(0,0,0,.4);
+        margin-bottom: 16px;
+    }
+    .err-links {
+        display: flex;
+        gap: 18px;
+        justify-content: center;
+        flex-wrap: wrap;
+        font-size: 14px;
+    }
+    .err-links a {
+        color: var(--ink-700, #3d3934);
+        text-decoration: underline;
+        text-decoration-color: rgba(0,0,0,.2);
+        text-underline-offset: 4px;
+        transition: color .18s ease;
+    }
+    .err-links a:hover {
+        color: var(--ink-900, #1a1814);
+        text-decoration-color: currentColor;
+    }
+    .err-meta {
+        margin-top: 56px;
+        padding-top: 24px;
+        border-top: 1px solid rgba(0,0,0,.08);
+        font-size: 11px;
+        letter-spacing: .15em;
+        color: rgba(0,0,0,.35);
+        font-family: 'Inter', monospace;
+    }
+    .err-meta code {
+        background: rgba(0,0,0,.04);
+        padding: 2px 8px;
+        border-radius: 4px;
+        color: rgba(0,0,0,.55);
+    }
+</style>

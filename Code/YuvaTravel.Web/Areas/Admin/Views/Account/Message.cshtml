@@ -1,0 +1,28 @@
+﻿@model YuvaTravel.Data.Dtos.Account.LoginDto
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_NotLoginLayout.cshtml";
+    ViewBag.Title = "訊息";
+}
+
+<div class="login-box">
+    <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+            <a href="#" class="h1"><b>@StrText.AdminName</b></a>
+        </div>
+        <div class="card-body">
+            <p class="login-box-msg">@ViewBag.Title</p>
+            @if (TempData["error-msg"] != null)
+            {
+                <div style="color:red;font-size:18pt;font-weight:900;text-align:center;margin-bottom:20px;">
+                    @TempData["error-msg"]
+                </div>
+            }
+            <div class="row">
+                <div class="col-12 text-right">
+                    <a href="@Url.Action("Login", "Account", new { Area = "Admin" })" class="btn btn-primary btn-block">回登入頁</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

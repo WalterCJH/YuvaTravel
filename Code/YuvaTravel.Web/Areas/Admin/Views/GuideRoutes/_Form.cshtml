@@ -1,0 +1,45 @@
+@model GuideRouteCreateOrEdit
+@{
+    var guideSelectList = ViewBag.GuideSelectList as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>;
+}
+
+<div class="row">
+    <div class="col-12"><div asp-validation-summary="ModelOnly" class="text-danger"></div></div>
+</div>
+
+<div class="card card-primary">
+    <div class="card-header"><h3 class="card-title">@StrText.Generally</h3></div>
+    <div class="card-body">
+        <div class="form-group">
+            <label asp-for="GuideId" class="control-label col-md-12"></label>
+            <select asp-for="GuideId" asp-items="guideSelectList" class="form-control">
+                <option value="">(請選擇)</option>
+            </select>
+            <span asp-validation-for="GuideId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Title" class="control-label col-md-12"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="control-label col-md-12"></label>
+            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label asp-for="Duration" class="control-label col-md-12"></label>
+                <input asp-for="Duration" class="form-control" />
+            </div>
+            <div class="col-md-6 form-group">
+                <label asp-for="DisplaySeq" class="control-label col-md-12"></label>
+                <input asp-for="DisplaySeq" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Url" class="control-label col-md-12"></label>
+            <input asp-for="Url" class="form-control" />
+        </div>
+    </div>
+</div>

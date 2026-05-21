@@ -1,0 +1,188 @@
+@model RecruitAgentFilter
+
+@{
+    ViewBag.Title = StrText.RecruitAgents + StrText.Index;
+    var listData = ViewBag.ListData as IEnumerable<RecruitAgent>;
+    object SetRouteValue(string sortBy, string sortDirection, int? pageNo = null)
+    {
+        var value = new { SortBy = sortBy, SortDirection = sortDirection, PageNo = pageNo, Nick = Model.Nick, Phone = Model.Phone, TelegramID = Model.TelegramID, LineID = Model.LineID };
+
+        return value;
+    }
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.FormInfo"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Index)" method="get">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-auto col-12">
+                        <cus-checkbox asp-for="IsContact" />
+                    </div>
+                    <div class="col-12 mt-3"></div>
+                    <div class="col-md-3 col-6">
+                        <label asp-for="Nick" class="control-label col-12"></label>
+                        <input asp-for="Nick" class="form-control" />
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <label asp-for="Phone" class="control-label col-12"></label>
+                        <input asp-for="Phone" class="form-control" />
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <label asp-for="TelegramID" class="control-label col-12"></label>
+                        <input asp-for="TelegramID" class="form-control" />
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <label asp-for="LineID" class="control-label col-12"></label>
+                        <input asp-for="LineID" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-secondary js-search-clear" title="清除搜尋欄位">
+                    <i class="fas fa-broom"></i>
+                </button>
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<section class="content">
+
+    @Html.PagedListPager(listData as IPagedList, (p) => Url.Action(nameof(StrText.Index), SetRouteValue(Model.SortBy, Model.SortDirection, p)),
+    new PagedListRenderOptions
+    {
+        LiElementClasses = new string[] { "paginate_button page-item previous" },
+        PageClasses = new string[] { "page-link" },
+        DisplayLinkToFirstPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always
+    })
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">@StrText.Index</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped projects">
+                <thead>
+                    <tr>
+                        <th style="width: 10%">
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("Nick", nameof(StrText.ASC)))"><i class="fas fa-sort-amount-up-alt"></i></a>
+                            <cus-display-name for-type="@typeof(RecruitAgent)" property="Nick" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("Nick", nameof(StrText.DESC)))"><i class="fas fa-sort-amount-down"></i></a>
+                        </th>
+                        <th style="width: 15%">
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("Phone", nameof(StrText.ASC)))"><i class="fas fa-sort-numeric-up"></i></a>
+                            <cus-display-name for-type="@typeof(RecruitAgent)" property="Phone" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("Phone", nameof(StrText.DESC)))"><i class="fas fa-sort-numeric-down-alt"></i></a>
+                        </th>
+                        <th style="width: 15%">
+                            <cus-display-name for-type="@typeof(RecruitAgent)" property="TelegramID" />
+                        </th>
+                        <th style="width: 15%">
+                            <cus-display-name for-type="@typeof(RecruitAgent)" property="LineID" />
+                        </th>
+                        <th style="width: 15%">
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("UserLog.CreateTime", nameof(StrText.ASC)))"><i class="fas fa-sort-amount-up-alt"></i></a>
+                            <cus-display-name for-type="@typeof(RecruitAgent)" property="FillTime" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("UserLog.CreateTime", nameof(StrText.DESC)))"><i class="fas fa-sort-amount-down"></i></a>
+                        </th>
+                        <th style="width: 15%">
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("ContactTime", nameof(StrText.ASC)))"><i class="fas fa-sort-amount-up-alt"></i></a>
+                            <cus-display-name for-type="@typeof(RecruitAgent)" property="ContactTime" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("ContactTime", nameof(StrText.DESC)))"><i class="fas fa-sort-amount-down"></i></a>
+                        </th>
+                        <th class="project-actions text-right" style="width: 15%">
+                            @if (ViewBag.IsExport)
+                            {
+                                <a asp-action="@nameof(StrText.Export)" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-file-export"></i>
+                                    @StrText.Export
+                                </a>
+                            }
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in listData)
+                    {
+                        <tr>
+                            <td>
+                                <cus-display value="@item.Nick" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.Phone" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.TelegramID" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.LineID" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.FillTime" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.ContactTime" />
+                            </td>
+                            <td class="project-actions text-right">
+                                <a asp-action="@nameof(StrText.Contacts)" asp-route-id="@item.RecruitAgentId" class="btn btn-info btn-sm">
+                                    <i class="fas fa-pencil-alt"></i>
+                                    @StrText.Contacts
+                                </a>
+                                @if (ViewBag.IsDetails)
+                                {
+                                    <a asp-action="@nameof(StrText.Details)" asp-route-id="@item.RecruitAgentId" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-folder"></i>
+                                        @StrText.Details
+                                    </a>
+                                }
+                                @if (ViewBag.IsEdit)
+                                {
+                                    <a asp-action="@nameof(StrText.Edit)" asp-route-id="@item.RecruitAgentId" class="btn btn-info btn-sm">
+                                        <i class="fas fa-pencil-alt"></i>
+                                        @StrText.Edit
+                                    </a>
+                                }
+                                @if (ViewBag.IsDelete)
+                                {
+                                    <a asp-action="@nameof(StrText.Delete)" asp-route-id="@item.RecruitAgentId" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                        @StrText.Delete
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+
+    @Html.PagedListPager(listData as IPagedList, (p) => Url.Action(nameof(StrText.Index), SetRouteValue(Model.SortBy, Model.SortDirection, p)),
+    new PagedListRenderOptions
+    {
+        LiElementClasses = new string[] { "paginate_button page-item previous" },
+        PageClasses = new string[] { "page-link" },
+        DisplayLinkToFirstPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always
+    })
+
+</section>

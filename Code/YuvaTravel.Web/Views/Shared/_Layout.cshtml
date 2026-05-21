@@ -1,0 +1,316 @@
+﻿@{
+    MetaDto metaDto;
+    if (ViewBag.MetaDto != null)
+    {
+        metaDto = ViewBag.MetaDto as MetaDto;
+    }
+    else
+    {
+        metaDto = new MetaDto();
+    }
+
+    var host = ViewBag.Host as string ?? $"{Context.Request.Scheme}://{Context.Request.Host}";
+    var logoUri = $"{host}{StrPath.Logo}";
+    var canonical = !string.IsNullOrWhiteSpace(metaDto.Canonical)
+        ? metaDto.Canonical
+        : $"{host}{Context.Request.Path}";
+
+    var pageTitle = !string.IsNullOrWhiteSpace(metaDto.Title)
+        ? metaDto.Title
+        : (!string.IsNullOrWhiteSpace(ViewBag.Title as string)
+            ? $"{ViewBag.Title} - {StrText.UserWebName}"
+            : StrText.UserWebName);
+
+    var pageDescription = !string.IsNullOrWhiteSpace(metaDto.Description)
+        ? metaDto.Description
+        : "域見 YuvaTravel — 為旅人媒合一位真正在地的嚮導,走一段不在攻略上的旅程。";
+
+    var ogImage = !string.IsNullOrWhiteSpace(metaDto.OgImage)
+        ? (metaDto.OgImage.StartsWith("http") ? metaDto.OgImage : $"{host}{metaDto.OgImage}")
+        : logoUri;
+    var ogType = !string.IsNullOrWhiteSpace(metaDto.OgType) ? metaDto.OgType : "website";
+
+    bool isAdminPath = Context.Request.Path.Value?.ToLower().Contains("/admin/") == true;
+    bool isProduction = !(Context.Request.Host.Host.Contains("localhost")
+                          || Context.Request.Host.Host.Contains("192.168")
+                          || isAdminPath);
+
+    // 後台 + Search + Error 預設 noindex
+    var pathLower = Context.Request.Path.Value?.ToLower() ?? "";
+    bool autoNoIndex = pathLower.StartsWith("/admin/")
+                       || pathLower.StartsWith("/account/")
+                       || pathLower.StartsWith("/search")
+                       || pathLower.StartsWith("/error");
+    bool noIndex = metaDto.NoIndex || autoNoIndex;
+}
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+
+    <link rel="preload" as="script" href="~/Scripts/jquery-3.6.0.min.js">
+    @RenderSection("head_preload", required: false)
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <title>@pageTitle</title>
+    <meta name="description" content="@pageDescription" />
+    @if (!string.IsNullOrWhiteSpace(metaDto.Keywords))
+    {
+        <meta name="keywords" content="@metaDto.Keywords" />
+    }
+    @if (!string.IsNullOrWhiteSpace(metaDto.Author))
+    {
+        <meta name="author" content="@metaDto.Author" />
+    }
+
+    @* === Robots === *@
+    @if (noIndex)
+    {
+        <meta name="robots" content="noindex, nofollow" />
+    }
+    else
+    {
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    }
+
+    @* === Canonical === *@
+    <link rel="canonical" href="@canonical" />
+
+    @* === Open Graph === *@
+    <meta property="og:type" content="@ogType" />
+    <meta property="og:site_name" content="@StrText.UserWebName" />
+    <meta property="og:title" content="@pageTitle" />
+    <meta property="og:description" content="@pageDescription" />
+    <meta property="og:url" content="@canonical" />
+    <meta property="og:image" content="@ogImage" />
+    @if (!string.IsNullOrWhiteSpace(metaDto.OgImageAlt))
+    {
+        <meta property="og:image:alt" content="@metaDto.OgImageAlt" />
+    }
+    <meta property="og:locale" content="zh_TW" />
+
+    @* === Twitter Card === *@
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@pageTitle" />
+    <meta name="twitter:description" content="@pageDescription" />
+    <meta name="twitter:image" content="@ogImage" />
+
+    @* === Preconnect 加速第三方資源 === *@
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css" />
+    <link rel="stylesheet" href="~/Content/site/styles.css" />
+
+    <link rel="icon" href="~/Images/favicon/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="~/Images/favicon/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Images/favicon/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="~/Images/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="~/Images/favicon/site.webmanifest" />
+
+    @* === Organization JSON-LD === *@
+    <script type="application/ld+json">
+            {
+              "@@context": "https://schema.org",
+              "@@type": "Organization",
+              "name": "@StrText.UserWebName YuvaTravel",
+              "alternateName": "@StrText.UserWebName",
+              "url": "@host",
+              "logo": "@logoUri",
+              "description": "私訪旅誌 — 為旅人與在地嚮導之間,留下一段彼此都記得的相遇。"
+            }
+    </script>
+
+    @* === WebSite JSON-LD (含搜尋盒) === *@
+    <script type="application/ld+json">
+            {
+              "@@context": "https://schema.org",
+              "@@type": "WebSite",
+              "name": "@StrText.UserWebName YuvaTravel",
+              "url": "@host",
+              "potentialAction": {
+                "@@type": "SearchAction",
+                "target": "@host/search?keyword={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            }
+    </script>
+
+    @* === 頁面自訂 JSON-LD === *@
+    @if (metaDto.JsonLdBlocks != null)
+    {
+        foreach (var jsonLd in metaDto.JsonLdBlocks)
+        {
+            if (!string.IsNullOrWhiteSpace(jsonLd))
+            {
+                <script type="application/ld+json">@Html.Raw(jsonLd)</script>
+            }
+        }
+    }
+
+    @RenderSection("head_scripts", required: false)
+
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+
+    @if (isProduction)
+    {
+        <!-- Google Tag Manager -->
+        <script>
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-MFJ594CQ');
+        </script>
+        <!-- End Google Tag Manager -->
+    }
+</head>
+
+<body>
+
+    @if (isProduction)
+    {
+        <!-- Google Tag Manager (noscript) -->
+        <noscript>
+            <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MFJ594CQ" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+        </noscript>
+        <!-- End Google Tag Manager (noscript) -->
+    }
+
+    <!-- ===================== TOP NAV ===================== -->
+    <header class="nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-logo" aria-label="域見 YuvaTravel 首頁">
+                <img src="~/Images/site/logo-mark.svg" alt="" loading="lazy" decoding="async" />
+                <span>域見</span>
+                <span class="tag">PRIVATE CURATION</span>
+            </a>
+
+            <nav aria-label="主要導覽">
+                <ul class="nav-links">
+                    <li><a href="/">首頁</a></li>
+                    <li><a href="/Category">文章</a></li>
+                    <li><a href="/Tag">標籤</a></li>
+                    <li><a href="/Guides">嚮導</a></li>
+                    <li><a href="/Search">搜尋</a></li>
+                    <li><a href="/Faq">Q&amp;A</a></li>
+                </ul>
+            </nav>
+
+            <a href="@StrPath.MatchStart" class="btn nav-cta" target="_blank" rel="noopener">開始媒合</a>
+
+            <button class="nav-toggle" aria-label="開啟選單" aria-expanded="false" aria-controls="nav-drawer">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <div id="nav-drawer" class="nav-drawer" hidden>
+        <ul>
+            <li><a href="/">首頁</a></li>
+            <li><a href="/Category">文章</a></li>
+            <li><a href="/Tag">標籤</a></li>
+            <li><a href="/Search">搜尋</a></li>
+            <li><a href="/Faq">Q&amp;A</a></li>
+        </ul>
+        <a href="@StrPath.MatchStart" class="btn" target="_blank" rel="noopener">開始媒合 →</a>
+    </div>
+
+    @{
+        string flashMsg = null;
+        if (TempData["subscribe-ok"] is string okMsg) flashMsg = okMsg;
+        else if (TempData["subscribe-info"] is string infoMsg) flashMsg = infoMsg;
+        else if (TempData["subscribe-err"] is string errMsg) flashMsg = errMsg;
+    }
+    @if (!string.IsNullOrEmpty(flashMsg))
+    {
+        <script>
+            (function () {
+            // 等 DOM ready 再跳,避免阻塞畫面渲染
+            if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', show);
+            } else {
+            show();
+            }
+            function show() { alert(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(flashMsg))); }
+            })();
+        </script>
+    }
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-mark">
+                        <img class="footer-logo" src="~/Images/site/logo-mark-light.svg" alt="" />
+                        <span class="footer-wordmark">域見<small>YUVATRAVEL</small></span>
+                    </div>
+                    <p>私訪旅誌 — 為旅人與在地嚮導之間，留下一段彼此都記得的相遇。</p>
+                </div>
+                <div>
+                    <h4>探索</h4>
+                    <ul>
+                        <li><a href="/Category">所有文章</a></li>
+                        <li><a href="/Tag">標籤</a></li>
+                        <li><a href="/Search">搜尋</a></li>
+                        <li><a href="/Guides">嚮導</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>關於</h4>
+                    <ul>
+                        <li><a href="#">媒合流程</a></li>
+                        <li><a href="/Faq">常見問答</a></li>
+                        <li><a href="mailto:service@@yuvatravel.com">聯絡我們</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>關注</h4>
+                    <ul>
+                        <li><a href="@StrPath.Instagram" target="_blank" rel="noopener">Instagram</a></li>
+                        <li><a href="@StrPath.Facebook" target="_blank" rel="noopener">Facebook</a></li>
+                        @* <li><a href="#">電子報</a></li> *@
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; @DateTime.Now.Year YuvaTravel 域見 · Private Curation</span>
+                <span><a href="/Privacy">隱私政策</a> · <a href="/Terms">使用條款</a></span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // mobile drawer toggle
+        (function () {
+        var btn = document.querySelector('.nav-toggle');
+        var drawer = document.getElementById('nav-drawer');
+        if (!btn || !drawer) return;
+        btn.addEventListener('click', function () {
+        var open = drawer.classList.toggle('is-open');
+        drawer.hidden = !open;
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        btn.setAttribute('aria-label', open ? '關閉選單' : '開啟選單');
+        });
+        drawer.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+        drawer.classList.remove('is-open');
+        drawer.hidden = true;
+        btn.setAttribute('aria-expanded', 'false');
+        });
+        });
+        })();
+
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

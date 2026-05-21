@@ -1,0 +1,108 @@
+@model GuideRouteFilter
+
+@{
+    ViewBag.Title = StrText.GuideRoutes + StrText.Index;
+    var listData = ViewBag.ListData as IEnumerable<GuideRoute>;
+    var guideSelectList = ViewBag.GuideSelectList as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>;
+    var currentGuide = ViewBag.CurrentGuide as Guide;
+
+    object SetRouteValue(string sortBy, string sortDirection, int? pageNo = null)
+    {
+        return new { SortBy = sortBy, SortDirection = sortDirection, PageNo = pageNo, GuideId = Model.GuideId, Keyword = Model.Keyword };
+    }
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.Guides"
+                    resource="@StrText.Guides"
+                    resource-controller="Guides"
+                    current="@StrText.GuideRoutes" />
+}
+
+@if (currentGuide != null)
+{
+    <div class="alert alert-info">
+        目前篩選嚮導：<strong>@currentGuide.Name @currentGuide.NameEn</strong>
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary float-right">清除</a>
+    </div>
+}
+
+<form asp-action="@nameof(StrText.Index)" method="get">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="form-group row mb-3">
+                <div class="col-md-4 col-12">
+                    <label asp-for="GuideId" class="control-label col-12">嚮導</label>
+                    <select asp-for="GuideId" asp-items="guideSelectList" class="form-control">
+                        <option value="">(全部)</option>
+                    </select>
+                </div>
+                <div class="col-md-8 col-12">
+                    <label asp-for="Keyword" class="control-label col-12"></label>
+                    <input asp-for="Keyword" class="form-control" placeholder="路線標題" />
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-secondary js-search-clear"><i class="fas fa-broom"></i></button>
+                <button type="submit" class="btn btn-secondary"><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<section class="content">
+    @Html.PagedListPager(listData as IPagedList, (p) => Url.Action(nameof(StrText.Index), SetRouteValue(Model.SortBy, Model.SortDirection, p)),
+        new PagedListRenderOptions { LiElementClasses = new[] { "paginate_button page-item previous" }, PageClasses = new[] { "page-link" } })
+
+    <div class="card">
+        <div class="card-header"><h3 class="card-title">@StrText.Index</h3></div>
+        <div class="card-body p-0">
+            <table class="table table-striped projects">
+                <thead>
+                    <tr>
+                        <th style="width:8%">順序</th>
+                        <th>嚮導</th>
+                        <th>標題</th>
+                        <th>時長</th>
+                        <th class="project-actions text-right" style="width:25%">
+                            @if (ViewBag.IsCreate)
+                            {
+                                <a asp-action="@nameof(StrText.Create)" asp-route-guideId="@Model.GuideId" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus"></i> @StrText.Create
+                                </a>
+                            }
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in listData)
+                    {
+                        <tr>
+                            <td>@item.DisplaySeq</td>
+                            <td>@item.Guide?.Name</td>
+                            <td><strong>@item.Title</strong><br /><small class="text-muted">@item.Description</small></td>
+                            <td>@item.Duration</td>
+                            <td class="project-actions text-right">
+                                @if (ViewBag.IsEdit)
+                                {
+                                    <a asp-action="@nameof(StrText.Edit)" asp-route-id="@item.GuideRouteId" class="btn btn-info btn-sm">
+                                        <i class="fas fa-pencil-alt"></i> @StrText.Edit
+                                    </a>
+                                }
+                                @if (ViewBag.IsDelete)
+                                {
+                                    <a asp-action="@nameof(StrText.Delete)" asp-route-id="@item.GuideRouteId" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i> @StrText.Delete
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @Html.PagedListPager(listData as IPagedList, (p) => Url.Action(nameof(StrText.Index), SetRouteValue(Model.SortBy, Model.SortDirection, p)),
+        new PagedListRenderOptions { LiElementClasses = new[] { "paginate_button page-item previous" }, PageClasses = new[] { "page-link" } })
+</section>

@@ -1,0 +1,229 @@
+﻿@model TagListDto
+@{
+    ViewBag.Title = string.IsNullOrEmpty(Model.CurrentName) ? "標籤" : $"#{Model.CurrentName} · 文章標籤";
+}
+
+@section head_scripts {
+    <link rel="stylesheet" href="~/Content/site/category.css" />
+}
+
+<!-- ===================== TAG HERO ===================== -->
+<section class="tag-hero">
+    <div class="container">
+        <nav class="breadcrumb" aria-label="麵包屑">
+            <a href="/">首頁</a>
+            <span class="sep">/</span>
+            <a href="/Tag">標籤</a>
+            @if (!string.IsNullOrEmpty(Model.CurrentName))
+            {
+                <span class="sep">/</span>
+                <span class="here">#@Model.CurrentName</span>
+            }
+        </nav>
+
+        <div class="tag-hero-titling">
+            <div class="eyebrow">TAG · 文章標籤</div>
+            <h1 class="tag-hero-title">
+                @if (!string.IsNullOrEmpty(Model.CurrentName))
+                {
+                    <span class="hash" aria-hidden="true">#</span>
+                    @Model.CurrentName
+                }
+                else
+                {
+                    @:全部標籤
+                }
+            </h1>
+            @if (!string.IsNullOrEmpty(Model.CurrentDescription))
+            {
+                <p class="tag-hero-lede">@Html.Raw(Model.CurrentDescription)</p>
+            }
+            <div class="tag-hero-meta">
+                <span><strong>@Model.CurrentArticleCount</strong> 篇旅誌</span>
+                @if (Model.CurrentGuideCount > 0)
+                {
+                    <span class="dot">·</span>
+                    <span><strong>@Model.CurrentGuideCount</strong> 位嚮導</span>
+                }
+            </div>
+
+            @if (Model.RelatedTags.Count > 0)
+            {
+                <div class="tag-related">
+                    <span class="tag-related-label">相鄰標籤</span>
+                    @foreach (var rel in Model.RelatedTags.Take(6))
+                    {
+                        <a href="@StrPath.Tag(rel.Name)" class="tag-mini">#@rel.Name</a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ===================== TWO-COLUMN: LIST + TAG CLOUD ===================== -->
+<section class="tag-body">
+    <div class="container tag-grid">
+
+        <div class="tag-main">
+            <div class="tag-main-head">
+                <div class="tag-main-titling">
+                    <h2 class="h-section">這個標籤下的旅誌</h2>
+                    @if (Model.TotalArticles > 0)
+                    {
+                        var fromIdx = (Model.PageNo - 1) * Model.PageSize + 1;
+                        var toIdx = Math.Min(Model.PageNo * Model.PageSize, Model.TotalArticles);
+                        <p class="tag-main-sub">依時間排序 · 第 @fromIdx–@toIdx 篇 / 共 @Model.TotalArticles 篇</p>
+                    }
+                </div>
+                <form method="get" action="@StrPath.Tag(Model.T)" class="sort-control">
+                    <span class="sort-label">排序</span>
+                    <select name="sortBy" aria-label="排序方式" onchange="this.form.submit()">
+                        <option value="newest" selected="@(Model.SortBy == "newest")">最新發布</option>
+                        <option value="views" selected="@(Model.SortBy == "views")">最多觀看</option>
+                    </select>
+                </form>
+            </div>
+
+            @if (Model.Articles.Count > 0)
+            {
+                <ol class="article-list" aria-label="標籤 #@Model.CurrentName — 文章列表">
+                    @for (int i = 0; i < Model.Articles.Count; i++)
+                    {
+                        var item = Model.Articles[i];
+                        var seq = (Model.PageNo - 1) * Model.PageSize + i + 1;
+                        <li>
+                            <a href="@StrPath.Article("", item.C)" class="list-card">
+                                <div class="list-card-img">
+                                    <img src="@(string.IsNullOrEmpty(item.ImagePath) ? "https://images.unsplash.com/photo-1493780474015-ba834fd0ce2f?auto=format&fit=crop&w=900&q=80" : item.ImagePath)" alt="@item.ImageAlt" loading="lazy" decoding="async" />
+                                </div>
+                                <div class="list-card-body">
+                                    <div class="list-card-meta">
+                                        <span class="eyebrow">JOURNAL · @seq.ToString("00")</span>
+                                        <span class="dot">·</span>
+                                        <span>@item.PublishDate</span>
+                                    </div>
+                                    <h3 class="list-card-title">@item.Title</h3>
+                                    <p class="list-card-excerpt">@item.Description</p>
+                                    <div class="list-card-foot">
+                                        <div class="list-tags">
+                                            @if (item.Tags != null)
+                                            {
+                                                foreach (var tag in item.Tags.Take(3))
+                                                {
+                                                    <span class="tag-chip @(tag.Name == Model.CurrentName ? "is-current" : "")">#@tag.Name</span>
+                                                }
+                                            }
+                                        </div>
+                                        <span class="list-card-stat">
+                                            <span class="views"><span class="view-dot"></span>@item.ViewCounts.ToString("N0")</span>
+                                            @if (item.ReadTimeMin.HasValue)
+                                            {
+                                                <span class="dot">·</span>
+                                                <span>@item.ReadTimeMin 分鐘</span>
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    }
+                </ol>
+            }
+            else
+            {
+                <p style="text-align:center; padding: 60px 0; color: rgba(0,0,0,.45);">這個標籤下還沒有文章。</p>
+            }
+
+            @if (Model.TotalPages > 1)
+            {
+                <nav class="pagination" aria-label="分頁">
+                    @{
+                        var tagBase = StrPath.Tag(Model.T);
+                    }
+                    @if (Model.PageNo > 1)
+                    {
+                        <a href="@tagBase?pageNo=@(Model.PageNo - 1)&sortBy=@Model.SortBy" class="page-btn">← 上一頁</a>
+                    }
+                    else
+                    {
+                        <a href="#" class="page-btn is-disabled" aria-disabled="true">← 上一頁</a>
+                    }
+                    <ol class="page-numbers">
+                        @for (int p = 1; p <= Model.TotalPages; p++)
+                        {
+                            if (p == Model.PageNo)
+                            {
+                                <li><a href="#" class="page-num is-active" aria-current="true">@p</a></li>
+                            }
+                            else
+                            {
+                                <li><a href="@tagBase?pageNo=@p&sortBy=@Model.SortBy" class="page-num">@p</a></li>
+                            }
+                        }
+                    </ol>
+                    @if (Model.PageNo < Model.TotalPages)
+                    {
+                        <a href="@tagBase?pageNo=@(Model.PageNo + 1)&sortBy=@Model.SortBy" class="page-btn">下一頁 →</a>
+                    }
+                    else
+                    {
+                        <a href="#" class="page-btn is-disabled" aria-disabled="true">下一頁 →</a>
+                    }
+                </nav>
+            }
+        </div>
+
+        <aside class="tag-aside">
+            <div class="aside-card">
+                <div class="aside-head">
+                    <div class="eyebrow">TAG CLOUD</div>
+                    <h3 class="aside-title">所有標籤</h3>
+                    <p class="aside-sub">大小依文章數量</p>
+                </div>
+                <div class="cloud">
+                    @foreach (var t in Model.AllTags)
+                    {
+                        <a href="@t.Url" class="cl @(t.Name == Model.CurrentName ? "is-current" : "")" data-rank="@t.Rank">#@t.Name<i>@t.Count</i></a>
+                    }
+                </div>
+            </div>
+
+            @if (Model.Guides.Count > 0)
+            {
+                <div class="aside-card aside-card--dark">
+                    <div class="eyebrow eyebrow-onDark">LOCAL GUIDES · 同主題嚮導</div>
+                    <h3 class="aside-title aside-title-onDark">熟悉 @(string.IsNullOrEmpty(Model.CurrentName) ? "" : "#" + Model.CurrentName) 的人</h3>
+                    <ul class="mini-guides">
+                        @foreach (var g in Model.Guides)
+                        {
+                            var regionsText = string.Join(" · ", g.Regions.Select(r => r.Name));
+                            var subParts = new List<string>();
+                            if (!string.IsNullOrEmpty(regionsText)) subParts.Add(regionsText);
+                            if (g.YearsOfExperience > 0) subParts.Add($"{g.YearsOfExperience} 年");
+                            subParts.Add($"{g.ArticleCount} 篇旅誌");
+                            <li>
+                                <a href="@g.Url" class="mg-avatar" aria-label="@g.Name">
+                                    <img src="@(string.IsNullOrEmpty(g.PortraitUrl) ? "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" : g.PortraitUrl)" alt="@g.Name" loading="lazy" decoding="async" />
+                                </a>
+                                <div class="mg-meta">
+                                    <div class="mg-name">
+                                        @g.Name
+                                        @if (!string.IsNullOrEmpty(g.NameEn))
+                                        {
+                                            <em>@g.NameEn</em>
+                                        }
+                                    </div>
+                                    <div class="mg-sub">@string.Join(" · ", subParts)</div>
+                                </div>
+                                <a href="@g.Url" class="mg-cta">看簡介 →</a>
+                            </li>
+                        }
+                    </ul>
+                    <a href="/Guides" class="aside-allguides">看所有嚮導 →</a>
+                </div>
+            }
+        </aside>
+
+    </div>
+</section>

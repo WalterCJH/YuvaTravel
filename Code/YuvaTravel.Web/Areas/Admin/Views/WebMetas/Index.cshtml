@@ -1,0 +1,166 @@
+@model WebMetaFilter
+
+
+@{
+    ViewBag.Title = StrText.WebMetas + StrText.Index;
+    var listData = ViewBag.ListData as IEnumerable<WebMeta>;
+    object SetRouteValue(string sortBy, string sortDirection, int? pageNo = null)
+    {
+        var value = new { SortBy = sortBy, SortDirection = sortDirection, PageNo = pageNo, Keyword = Model.Keyword };
+
+        return value;
+    }
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.WebPageInfo"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Index)" method="get">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-9 col-12">
+                        <label asp-for="Keyword" class="control-label col-12"></label>
+                        <input asp-for="Keyword" class="form-control" placeholder="請輸入代碼、標題" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-secondary js-search-clear" title="清除搜尋欄位">
+                    <i class="fas fa-broom"></i>
+                </button>
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<section class="content">
+
+    @Html.PagedListPager(listData as IPagedList, (p) => Url.Action(nameof(StrText.Index), SetRouteValue(Model.SortBy, Model.SortDirection, p)),
+    new PagedListRenderOptions
+    {
+        LiElementClasses = new string[] { "paginate_button page-item previous" },
+        PageClasses = new string[] { "page-link" },
+        DisplayLinkToFirstPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always
+    })
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">@StrText.Index</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped projects">
+                <thead>
+                    <tr>
+                        <th style="width: 10%">
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("DisplaySeq", nameof(StrText.ASC)))"><i class="fas fa-sort-numeric-up"></i></a>
+                            <cus-display-name for-type="@typeof(WebMeta)" property="DisplaySeq" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("DisplaySeq", nameof(StrText.DESC)))"><i class="fas fa-sort-numeric-down-alt"></i></a>
+                        </th>
+                        <th style="width: 10%">
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("Name", nameof(StrText.ASC)))"><i class="fas fa-sort-amount-up-alt"></i></a>
+                            <cus-display-name for-type="@typeof(WebMeta)" property="Name" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("Name", nameof(StrText.DESC)))"><i class="fas fa-sort-amount-down"></i></a>
+                        </th>
+                        <th style="width: 10%">
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("OgType", nameof(StrText.ASC)))"><i class="fas fa-sort-alpha-up"></i></a>
+                            <cus-display-name for-type="@typeof(WebMeta)" property="OgType" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("OgType", nameof(StrText.DESC)))"><i class="fas fa-sort-alpha-down-alt"></i></a>
+                        </th>
+                        <th>
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("Url", nameof(StrText.ASC)))"><i class="fas fa-sort-amount-up-alt"></i></a>
+                            <cus-display-name for-type="@typeof(WebMeta)" property="Url" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("Url", nameof(StrText.DESC)))"><i class="fas fa-sort-amount-down"></i></a>
+                        </th>
+                        <th>
+                            <cus-display-name for-type="@typeof(WebMeta)" property="MetaTitle" />
+                        </th>
+                        <th class="project-actions text-right" style="width: 15%">
+                            @if (ViewBag.IsCreate)
+                            {
+                                <a asp-action="@nameof(StrText.Create)" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus"></i>
+                                    @StrText.Create
+                                </a>
+                            }
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in listData)
+                    {
+                        <tr>
+                            <td>
+                                <cus-display value="@item.DisplaySeq" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.Name" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.OgType" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.Url" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.MetaTitle" />
+                            </td>
+                            <td class="project-actions text-right">
+                                @if (ViewBag.IsDetails)
+                                {
+                                    <a asp-action="@nameof(StrText.Details)" asp-route-id="@item.WebMetaId" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-folder"></i>
+                                        @StrText.Details
+                                    </a>
+                                }
+                                @if (ViewBag.IsEdit)
+                                {
+                                    <a asp-action="@nameof(StrText.Edit)" asp-route-id="@item.WebMetaId" class="btn btn-info btn-sm">
+                                        <i class="fas fa-pencil-alt"></i>
+                                        @StrText.Edit
+                                    </a>
+                                }
+                                @if (ViewBag.IsDelete)
+                                {
+                                    <a asp-action="@nameof(StrText.Delete)" asp-route-id="@item.WebMetaId" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                        @StrText.Delete
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+
+    @Html.PagedListPager(listData as IPagedList, (p) => Url.Action(nameof(StrText.Index), SetRouteValue(Model.SortBy, Model.SortDirection, p)),
+    new PagedListRenderOptions
+    {
+        LiElementClasses = new string[] { "paginate_button page-item previous" },
+        PageClasses = new string[] { "page-link" },
+        DisplayLinkToFirstPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always
+    })
+
+</section>
+
+

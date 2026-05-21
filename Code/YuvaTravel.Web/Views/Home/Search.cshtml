@@ -1,0 +1,170 @@
+﻿@model SearchPageDto
+@{
+    ViewBag.Title = "搜尋";
+}
+
+@section head_scripts {
+    <link rel="stylesheet" href="~/Content/site/category.css" />
+    <link rel="stylesheet" href="~/Content/site/search.css" />
+}
+
+<!-- ===================== SEARCH HERO ===================== -->
+<section class="search-hero">
+    <div class="container search-hero-inner">
+        <div class="eyebrow">SEARCH · 尋找你的旅程</div>
+        <h1 class="search-hero-title">
+            你想去哪裡？<span class="en">Where to next.</span>
+        </h1>
+        <p class="search-hero-lede">
+            輸入一個地名、一種氣味、一句心情——<br />
+            讓我們為你找出一段，不在攻略上的旅程。
+        </p>
+
+        <form class="search-bar" role="search" autocomplete="off" action="/Category" method="get">
+            <span class="search-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="M20 20l-3.5-3.5" stroke-linecap="round" />
+                </svg>
+            </span>
+            <input class="search-input"
+                   type="search"
+                   name="s"
+                   placeholder="輸入地點、主題、嚮導…例如：京都茶道"
+                   aria-label="搜尋" />
+            <button class="search-submit" type="submit">搜尋 →</button>
+        </form>
+    </div>
+</section>
+
+<!-- ===================== HOT KEYWORDS ===================== -->
+@if (Model.HotKeywords.Count > 0)
+{
+    <section class="search-block">
+        <div class="container">
+            <div class="section-head">
+                <div class="titling">
+                    <div class="eyebrow">TRENDING · 旅人都在搜尋</div>
+                    <h2 class="h-section">熱門關鍵字</h2>
+                </div>
+                <span class="block-side-note">本週統計</span>
+            </div>
+
+            <ol class="keyword-rank">
+                @foreach (var kw in Model.HotKeywords)
+                {
+                    <li>
+                        <a href="@kw.Url">
+                            <span class="kr-num">@kw.Rank.ToString("00")</span>
+                            <span class="kr-text">@kw.Name</span>
+                        </a>
+                    </li>
+                }
+            </ol>
+        </div>
+    </section>
+}
+
+<!-- ===================== HOT TAGS ===================== -->
+@if (Model.HotTags.Count > 0)
+{
+    <section class="hot-tags search-tags">
+        <div class="container">
+            <div class="section-head">
+                <div class="titling">
+                    <div class="eyebrow">TAGS · 熱門標籤</div>
+                    <h2 class="h-section">從一個標籤開始</h2>
+                </div>
+                @* <a href="/Tag" class="more">看所有標籤 →</a> *@
+            </div>
+
+            <div class="hot-tags-cloud">
+                @foreach (var t in Model.HotTags)
+                {
+                    var size = t.Count >= 18 ? "lg" : (t.Count >= 12 ? "md" : "sm");
+                    <a href="@t.Url" class="tag-pill" data-size="@size">
+                        <span class="tag-pill-name">#@t.Name</span>
+                        <span class="tag-pill-count">@t.Count 篇</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<!-- ===================== EDITOR PICKS ===================== -->
+@if (Model.EditorPicks.Count > 0)
+{
+    <section class="search-picks">
+        <div class="container">
+            <div class="section-head">
+                <div class="titling">
+                    <div class="eyebrow">EDITOR'S PICKS · 編輯推薦</div>
+                    <h2 class="h-section">還沒想好？從這裡開始</h2>
+                </div>
+                <a href="/Category" class="more">看所有文章 →</a>
+            </div>
+
+            <div class="picks-grid">
+                @for (int i = 0; i < Model.EditorPicks.Count; i++)
+                {
+                    var pick = Model.EditorPicks[i];
+                    <a href="@StrPath.Article("", pick.C)" class="pick-card">
+                        <div class="pick-card-img">
+                            <img src="@(string.IsNullOrEmpty(pick.ImagePath) ? "https://images.unsplash.com/photo-1493780474015-ba834fd0ce2f?auto=format&fit=crop&w=900&q=80" : pick.ImagePath)" alt="@pick.ImageAlt" loading="lazy" decoding="async" />
+                            <span class="pick-num">@((i + 1).ToString("00"))</span>
+                        </div>
+                        <div class="pick-card-body">
+                            @if (pick.Tags != null && pick.Tags.Count > 0)
+                            {
+                                <span class="pick-tag">#@pick.Tags[0].Name</span>
+                            }
+                            <h3 class="pick-title">@pick.Title</h3>
+                            @if (pick.ReadTimeMin.HasValue)
+                            {
+                                <p class="pick-by">@pick.ReadTimeMin 分鐘 · @pick.ViewCounts.ToString("N0") 觀看</p>
+                            }
+                            else
+                            {
+                                <p class="pick-by">@pick.ViewCounts.ToString("N0") 觀看</p>
+                            }
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<!-- ===================== TIPS ===================== -->
+<section class="search-tips">
+    <div class="container search-tips-inner">
+        <div class="tips-titling">
+            <div class="eyebrow">TIPS · 搜尋小撇步</div>
+            <h2 class="h-section">不知道從哪裡開始？</h2>
+        </div>
+        <ol class="tips-list">
+            <li>
+                <span class="tip-num">01</span>
+                <div>
+                    <h4>用一個 <em>地名</em> 開始</h4>
+                    <p>「京都」、「台南」、「清邁」——我們會列出這個城市的所有旅誌與嚮導。</p>
+                </div>
+            </li>
+            <li>
+                <span class="tip-num">02</span>
+                <div>
+                    <h4>用一個 <em>感覺</em> 試試</h4>
+                    <p>「慢活」、「雨季」、「清晨」——這是旅人最常用的詞。</p>
+                </div>
+            </li>
+            <li>
+                <span class="tip-num">03</span>
+                <div>
+                    <h4>找 <em>嚮導</em> 的名字</h4>
+                    <p>記得某位嚮導？直接搜尋他的名字，看他的所有旅誌。</p>
+                </div>
+            </li>
+        </ol>
+    </div>
+</section>

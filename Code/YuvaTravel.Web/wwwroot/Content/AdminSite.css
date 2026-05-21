@@ -1,0 +1,109 @@
+﻿
+.input-validation-error {
+    border-color: #dc3545;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(.375em + .1875rem) center;
+    background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+}
+
+.field-validation-error {
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #dc3545;
+}
+
+.img-adaptive {
+    max-width: 100%;
+    height: 100%;
+}
+
+.toast-body {
+    width: 300px;
+}
+/*
+.cke_contents {
+    min-height: 300px;
+}*/
+
+.icon-index {
+    font-size: 20pt;
+}
+
+.img-mw-50 {
+    max-width: 50px;
+}
+
+.img-mw-300 {
+    max-width: 300px;
+}
+
+.img-mw-500 {
+    max-width: 500px;
+}
+
+.imgPreview {
+    z-index: 100;
+    display: none;
+    top: 0;
+    left: 0;
+    width: 100%; /*容器佔滿整個螢幕*/
+    height: 100%;
+    position: fixed;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+    .imgPreview img {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+    }
+
+/*新增滑鼠移入、移出圖片效果*/
+div .img-zoom-in {
+    cursor: url("/Images/zoom_in.png"), auto;
+    max-height: 100%;
+}
+
+div .img-zoom-out {
+    cursor: url("/Images/zoom_out.png"), auto;
+}
+
+.card-comment .card-header {
+    background-color: #18A05E;
+    color: white;
+}
+
+.text-danger-red {
+    color: #d50f0f !important;
+}
+
+.btn-danger-red {
+    color: #fff;
+    background-color: #d50f0f;
+    border-color: #d50f0f;
+    box-shadow: none;
+}
+
+.comment-icon-size {
+    font-size: 20pt;
+}
+
+i.ball {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 3px solid #000;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: bold;
+}
+
+.sortable-highlight {
+    height: 3em;
+    line-height: 1.2em;
+    background-color: #ffe971;
+}

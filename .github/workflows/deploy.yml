@@ -1,0 +1,52 @@
+name: Build and Deploy to IIS
+
+on:
+  push:
+    branches: [ master ]   # 推到 master 就自動部署
+
+jobs:
+  deploy:
+    runs-on: self-hosted  # 跑在你的 IIS Server
+
+    steps:
+    # 1. 拉取程式碼
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. 安裝 .NET 10
+    #- name: Setup .NET
+    #  uses: actions/setup-dotnet@v4
+    #  with:
+    #    dotnet-version: '10.0.x'
+
+    # 3. 還原套件
+    - name: Restore
+      run: dotnet restore ./Code/YuvaTravel.Web.sln
+
+    # 4. 編譯
+    - name: Build
+      run: dotnet build ./Code/YuvaTravel.Web.sln -c Release --no-restore
+      
+    # 5. Publish
+    - name: Publish
+      run: dotnet publish ./Code/YuvaTravel.Web/YuvaTravel.Web.csproj -c Release --no-build -o ./publish
+
+    # 6. 停止 App Pool
+    - name: Stop App Pool
+      shell: powershell
+      run: |
+        & "C:\Windows\System32\inetsrv\appcmd.exe" stop apppool /apppool.name:"${{ secrets.APP_POOL_NAME }}"
+        Start-Sleep -Seconds 3
+
+    # 7. 複製檔案
+    - name: Deploy Files
+      shell: powershell
+      run: |
+        robocopy ./publish "${{ secrets.IIS_SITE_PATH }}" /MIR /NJH /NJS
+        if ($LASTEXITCODE -le 7) { exit 0 }  # robocopy 成功碼是 0~7
+
+    # 8. 啟動 App Pool
+    - name: Start App Pool
+      shell: powershell
+      run: | 
+        & "C:\Windows\System32\inetsrv\appcmd.exe" start apppool /apppool.name:"${{ secrets.APP_POOL_NAME }}"

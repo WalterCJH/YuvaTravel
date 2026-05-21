@@ -1,0 +1,393 @@
+﻿@model ArticleDto
+@{
+    ViewBag.Title = Model?.Title ?? "文章";
+    var hasModel = Model != null && Model.ArticleId.HasValue;
+    var host = ViewBag.Host as string ?? $"{Context.Request.Scheme}://{Context.Request.Host}";
+    var articleUrl = $"{host}{Context.Request.Path}";
+    var publishedDate = Model?.OnlineTime?.ToString("yyyy-MM-ddTHH:mm:sszzz") ?? "";
+    var articleImage = string.IsNullOrEmpty(Model?.ImagePath)
+        ? ""
+        : (Model.ImagePath.StartsWith("http") ? Model.ImagePath : $"{host}{Model.ImagePath}");
+}
+
+@section head_scripts {
+    <link rel="stylesheet" href="~/Content/site/article.css" />
+    @if (hasModel)
+    {
+        @* JSON-LD: BlogPosting *@
+        <script type="application/ld+json">
+            {
+            "@@context": "https://schema.org",
+            "@@type": "BlogPosting",
+            "headline": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Title ?? "")),
+            "description": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Description ?? "")),
+            "image": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(articleImage)),
+            "datePublished": "@publishedDate",
+            "dateModified": "@publishedDate",
+            "author": {
+            "@@type": "Person",
+            "name": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Author ?? "YuvaTravel"))
+            },
+            "publisher": {
+            "@@type": "Organization",
+            "name": "@StrText.UserWebName YuvaTravel",
+            "logo": {
+            "@@type": "ImageObject",
+            "url": "@host@StrPath.Logo"
+            }
+            },
+            "mainEntityOfPage": {
+            "@@type": "WebPage",
+            "@@id": "@articleUrl"
+            },
+            "wordCount": @(Model.Content?.Length ?? 0),
+            "articleSection": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryName ?? "")),
+            "keywords": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Tags != null ? string.Join(", ", Model.Tags.Select(t => t.Name)) : ""))
+            }
+        </script>
+
+        @* JSON-LD: BreadcrumbList *@
+        <script type="application/ld+json">
+            {
+            "@@context": "https://schema.org",
+            "@@type": "BreadcrumbList",
+            "itemListElement": [
+            {
+            "@@type": "ListItem",
+            "position": 1,
+            "name": "首頁",
+            "item": "@host/"
+            },
+            {
+            "@@type": "ListItem",
+            "position": 2,
+            "name": "文章",
+            "item": "@host/category"
+            }@(string.IsNullOrEmpty(Model.CategoryName) ? "" : ",")
+            @if (!string.IsNullOrEmpty(Model.CategoryName))
+            {
+                <text>
+                    {
+                    "@@type": "ListItem",
+                    "position": 3,
+                    "name": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryName)),
+                    "item": "@host@StrPath.Category("", Model.CategoryCode)"
+                    },
+                    {
+                    "@@type": "ListItem",
+                    "position": 4,
+                    "name": @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Title)),
+                    "item": "@articleUrl"
+                    }
+                </text>
+            }
+            ]
+            }
+        </script>
+    }
+}
+
+<!-- reading progress bar -->
+<div class="read-progress" aria-hidden="true"><span id="read-bar"></span></div>
+
+@if (!hasModel)
+{
+    <section class="article-head">
+        <div class="container container-narrow">
+            <p style="text-align:center; padding: 80px 0; color: rgba(0,0,0,.45);">請從文章列表進入文章。</p>
+        </div>
+    </section>
+}
+else
+{
+    <!-- ===================== HEADER ===================== -->
+    <section class="article-head">
+        <div class="container container-narrow">
+            <nav class="crumbs" aria-label="麵包屑">
+                <a href="/">首頁</a>
+                <span>/</span>
+                <a href="/Category">文章</a>
+                @if (!string.IsNullOrEmpty(Model.CategoryName))
+                {
+                    <span>/</span>
+                    <a href="@StrPath.Category("", Model.CategoryCode)">@Model.CategoryName</a>
+                }
+                <span>/</span>
+                <span class="crumb-current">@Model.Title</span>
+            </nav>
+
+            <div class="eyebrow">
+                JOURNAL · NO. @Model.SerialNumber.ToString("00")
+                @if (!string.IsNullOrEmpty(Model.CategoryName))
+                {
+                    @: · @Model.CategoryName
+                }
+            </div>
+
+            <h1 class="article-title">@Model.Title</h1>
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <p class="article-deck">@Model.Description</p>
+            }
+
+            <div class="article-meta">
+                @if (!string.IsNullOrEmpty(Model.Author))
+                {
+                    <a href="#author" class="meta-author">
+                        <span class="meta-avatar">@(Model.Author.Substring(0, 1))</span>
+                        <span class="meta-author-text">
+                            <span class="meta-by">作者</span>
+                            <span class="meta-name">@Model.Author</span>
+                        </span>
+                    </a>
+                }
+                <ul class="meta-stats">
+                    @if (Model.OnlineTime.HasValue)
+                    {
+                        <li>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="4" y="5" width="16" height="15" rx="2" /><path d="M4 10h16 M9 3v4 M15 3v4" /></svg>
+                            <time datetime="@Model.OnlineTime.Value.ToString("yyyy-MM-dd")">@Model.OnlineTime.Value.ToString("yyyy 年 M 月 d 日")</time>
+                        </li>
+                    }
+                    @if (Model.ReadTimeMin.HasValue)
+                    {
+                        <li>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
+                            <span>@Model.ReadTimeMin 分鐘閱讀</span>
+                        </li>
+                    }
+                    <li>
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></svg>
+                        <span>@Model.ViewCounts.ToString("N0") 觀看</span>
+                    </li>
+                    <li class="meta-share-mini">
+                        <button type="button" aria-label="分享文章">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.5" /><circle cx="18" cy="6" r="2.5" /><circle cx="18" cy="18" r="2.5" /><path d="M8 11l8-4 M8 13l8 4" /></svg>
+                            <span>分享</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== HERO IMAGE ===================== -->
+    @if (!string.IsNullOrEmpty(Model.ImagePath))
+    {
+        <figure class="article-hero">
+            <img src="@Model.ImagePath" alt="@Model.ImageAlt" loading="lazy" decoding="async" />
+            @if (!string.IsNullOrEmpty(Model.ImageTitle))
+            {
+                <figcaption>@Model.ImageTitle</figcaption>
+            }
+        </figure>
+    }
+
+    <!-- ===================== BODY + ASIDE ===================== -->
+    <div class="article-body-wrap">
+        <div class="container">
+            <div class="article-grid">
+
+                <article class="article-body">
+                    @Html.Raw(Model.Content)
+                </article>
+
+                <aside class="article-aside">
+
+                    @if (!string.IsNullOrEmpty(Model.Author))
+                    {
+                        <div class="aside-card aside-author">
+                            <div class="aside-avatar">@(Model.Author.Substring(0, 1))</div>
+                            <div class="aside-author-meta">
+                                <div class="aside-eyebrow">AUTHOR · 作者</div>
+                                <div class="aside-author-name">@Model.Author</div>
+                            </div>
+                            <div>@Model.AuthorBio</div>
+                            @if (!string.IsNullOrEmpty(Model.GuideRegionStr))
+                            {
+                                <p>@Model.GuideRegionStr 旅誌作者。</p>
+                            }
+                        </div>
+                    }
+
+                    <div class="aside-card aside-news">
+                        <div class="aside-eyebrow">NEWSLETTER</div>
+                        <h4>每月一封 · 私訪旅誌</h4>
+                        <p>把這樣的清晨，寄到你的信箱。</p>
+                        <form method="post" action="/Subscriber">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="sourcePath" value="@Context.Request.Path@Context.Request.QueryString" />
+                            <input type="email" name="email" placeholder="你的 email" aria-label="email" required />
+                            <button type="submit" class="btn">訂閱</button>
+                        </form>
+                    </div>
+
+                </aside>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== TAGS + SHARE ===================== -->
+    @if (Model.Tags != null && Model.Tags.Count > 0)
+    {
+        <section class="article-tags">
+            <div class="container container-narrow">
+                <div class="tags-row">
+                    <div class="tags-list">
+                        <span class="tags-label">標籤</span>
+                        @foreach (var tag in Model.Tags)
+                        {
+                            <a href="@StrPath.Tag(tag.Name)" class="tag-pill">#@tag.Name</a>
+                        }
+                    </div>
+                    <div class="share-list">
+                        <span class="tags-label">分享</span>
+                        <button class="share-btn" aria-label="分享到 Facebook"><span>FB</span></button>
+                        <button class="share-btn" aria-label="分享到 LINE"><span>LINE</span></button>
+                        <button class="share-btn" aria-label="分享到 X"><span>X</span></button>
+                        <button class="share-btn share-copy" aria-label="複製連結">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="9" y="9" width="11" height="11" rx="2" /><path d="M5 15V6a2 2 0 0 1 2-2h9" /></svg>
+                            <span>複製連結</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+
+    <!-- ===================== AUTHOR BIO ===================== -->
+    @if (!string.IsNullOrEmpty(Model.Author))
+    {
+        <section class="article-author" id="author">
+            <div class="container container-narrow">
+                <div class="author-card">
+                    <div class="author-portrait">
+                        <span>@(Model.Author.Substring(0, 1))</span>
+                    </div>
+                    <div class="author-text">
+                        <div class="eyebrow">@(string.IsNullOrEmpty(Model.GuideRegionStr) ? "AUTHOR" : $"AUTHOR · {Model.GuideRegionStr}")</div>
+                        <h3 class="author-name">@Model.Author</h3>
+                    </div>
+                    <div>
+                        @Model.AuthorBio
+                    </div>
+                    <div class="author-actions">
+                        <a href="@StrPath.Category("", Model.CategoryCode)" class="btn-ghost">看更多文章</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+
+    <!-- ===================== RELATED ===================== -->
+    @if (Model.RelatedArticles.Count > 0)
+    {
+        <section class="article-related">
+            <div class="container">
+                <div class="section-head">
+                    <div class="titling">
+                        <div class="eyebrow">RELATED · 你也會喜歡</div>
+                        <h2 class="h-section">相關文章</h2>
+                    </div>
+                    <a href="@StrPath.Category("", Model.CategoryCode)" class="more">看更多 →</a>
+                </div>
+
+                <div class="related-grid">
+                    @foreach (var rel in Model.RelatedArticles)
+                    {
+                        <a href="@StrPath.Article("", rel.C)" class="rel-card">
+                            <div class="rel-thumb">
+                                <img src="@(string.IsNullOrEmpty(rel.ImagePath) ? "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=80" : rel.ImagePath)" alt="@rel.ImageAlt" loading="lazy" decoding="async" />
+                            </div>
+                            <div class="rel-body">
+                                @if (!string.IsNullOrEmpty(Model.CategoryName))
+                                {
+                                    <span class="rel-cat">@Model.CategoryName</span>
+                                }
+                                <h3>@rel.Title</h3>
+                                <p class="rel-meta">@(rel.ReadTimeMin.HasValue ? $"{rel.ReadTimeMin} 分鐘 · " : "")@rel.ViewCounts.ToString("N0") 觀看</p>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    <!-- ===================== PREV / NEXT ===================== -->
+    @if (Model.PrevArticle != null || Model.NextArticle != null)
+    {
+        <section class="article-pn">
+            <div class="container container-narrow">
+                <div class="pn-grid">
+                    @if (Model.PrevArticle != null)
+                    {
+                        <a href="@StrPath.Article("", Model.PrevArticle.C)" class="pn-card pn-prev">
+                            <span class="pn-label">← 上一篇</span>
+                            <span class="pn-title">@Model.PrevArticle.Title</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <span></span>
+                    }
+                    @if (Model.NextArticle != null)
+                    {
+                        <a href="@StrPath.Article("", Model.NextArticle.C)" class="pn-card pn-next">
+                            <span class="pn-label">下一篇 →</span>
+                            <span class="pn-title">@Model.NextArticle.Title</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+}
+
+@section scripts {
+    <script>
+        // 閱讀進度條
+        (function () {
+            var bar = document.getElementById('read-bar');
+            if (!bar) return;
+            function onScroll() {
+                var doc = document.documentElement;
+                var max = doc.scrollHeight - window.innerHeight;
+                var pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+                bar.style.width = Math.min(100, Math.max(0, pct)) + '%';
+            }
+            window.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
+        })();
+
+        // 文章目錄 collapse (取代 Bootstrap 5 collapse,本站未載 Bootstrap JS)
+        (function () {
+            var triggers = document.querySelectorAll('[data-bs-toggle="collapse"]');
+            if (!triggers.length) return;
+
+            triggers.forEach(function (btn) {
+                var sel = btn.getAttribute('data-bs-target') || btn.getAttribute('href');
+                if (!sel) return;
+                var target = document.querySelector(sel);
+                if (!target) return;
+
+                // 預設展開:用 aria-expanded 判斷,沒設定的話視為展開
+                var initialExpanded = btn.getAttribute('aria-expanded') !== 'false';
+                if (initialExpanded) {
+                    target.classList.add('show');
+                    btn.setAttribute('aria-expanded', 'true');
+                } else {
+                    target.classList.remove('show');
+                    btn.setAttribute('aria-expanded', 'false');
+                }
+
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var nowExpanded = target.classList.toggle('show');
+                    btn.setAttribute('aria-expanded', nowExpanded ? 'true' : 'false');
+                });
+            });
+        })();
+    </script>
+}

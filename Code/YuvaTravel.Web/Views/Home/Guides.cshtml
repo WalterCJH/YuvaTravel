@@ -1,0 +1,119 @@
+﻿@model GuidesPageDto
+@{
+    ViewBag.Title = "在地嚮導";
+}
+
+@section head_scripts {
+    <link rel="stylesheet" href="~/Content/site/guides.css" />
+}
+
+<section class="guides-hero">
+    <div class="container">
+        <div class="eyebrow">GUIDES · 在地嚮導</div>
+        <h1>與真正在地的人，走一段</h1>
+        <p>不是行程表上的嚮導，是會在你雨天敲門時，遞給你一把傘的人。亞洲十餘城市、@(Model.TotalGuides + (Model.FeaturedGuide != null ? 1 : 0)) 位真正住在當地的旅伴。</p>
+        <div class="stats">@(Model.TotalGuides + (Model.FeaturedGuide != null ? 1 : 0)) 位嚮導 · @Model.CityCount 座城市 @(Model.Languages.Count > 0 ? "· " + Model.Languages.Count + " 種語言" : "")</div>
+    </div>
+</section>
+
+<div class="container">
+    @if (Model.FeaturedGuide != null && string.IsNullOrEmpty(Model.Id))
+    {
+        var fg = Model.FeaturedGuide;
+        <a href="@fg.Url" class="featured-guide">
+            <img src="@(string.IsNullOrEmpty(fg.CoverUrl) ? "https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=2000&q=80" : fg.CoverUrl)" alt="本月精選嚮導：@fg.Name" loading="lazy" decoding="async" />
+            <div class="featured-guide-overlay">
+                <div class="eyebrow">本月精選 @(fg.Regions.Count == 0 ? "" : "· " + string.Join(" · ", fg.Regions.Select(r => r.Name)))</div>
+                <h2>@fg.Name @fg.NameEn</h2>
+                <div class="featured-guide-en">@fg.YearsOfExperience 年在地 · @fg.Languages · ★ @fg.Rating.ToString("0.0")</div>
+                @if (!string.IsNullOrEmpty(fg.Bio))
+                {
+                    <p class="featured-guide-quote">「@fg.Bio」</p>
+                }
+            </div>
+        </a>
+    }
+
+    <div class="guides-filter">
+        <div class="city-chips">
+            <a class="city-chip @(string.IsNullOrEmpty(Model.Id) ? "is-active" : "")" href="/Guides">全部</a>
+            @foreach (var city in Model.Cities)
+            {
+                <a class="city-chip @(Model.Id == city.Code || Model.Id == city.Name ? "is-active" : "")" href="/Guides/@city.Code">@city.Name</a>
+            }
+        </div>
+        <div class="guides-filter-meta">
+            @if (Model.Languages.Count > 0)
+            {
+                <span>語言：@string.Join(" · ", Model.Languages)</span>
+            }
+            <span>排序：最多旅誌 ▾</span>
+        </div>
+    </div>
+
+    @if (Model.Guides.Count > 0)
+    {
+        <div class="guides-grid">
+            @foreach (var g in Model.Guides)
+            {
+                <a href="@g.Url" class="gcard">
+                    <div class="gcard-portrait">
+                        <img src="@(string.IsNullOrEmpty(g.PortraitUrl) ? "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80" : g.PortraitUrl)" alt="@g.Name" loading="lazy" decoding="async" />
+                        @if (g.Regions.Count > 0)
+                        {
+                            <span class="gcard-city">@string.Join(" · ", g.Regions.Select(r => r.Name))</span>
+                        }
+                        <span class="gcard-rating">★ @g.Rating.ToString("0.0")</span>
+                    </div>
+                    <div class="gcard-body">
+                        <div class="gcard-name-row">
+                            <span class="gcard-name">@g.Name</span>
+                            <span class="gcard-en">@g.NameEn</span>
+                        </div>
+                        <div class="gcard-meta">@g.YearsOfExperience 年在地 · @g.Languages</div>
+                        <p class="gcard-bio">@g.Bio</p>
+                        <div class="gcard-tags">
+                            @foreach (var t in g.Tags)
+                            {
+                                <span class="gcard-tag">#@t</span>
+                            }
+                        </div>
+                        <div class="gcard-foot">
+                            <span>◉ @g.ArticleCount 篇旅誌</span>
+                            <span class="gcard-cta">看嚮導 →</span>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <p style="text-align:center; padding: 60px 0; color: rgba(0,0,0,.45);">目前沒有符合條件的嚮導。</p>
+    }
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="guides-pager" aria-label="分頁">
+            @if (Model.PageNo > 1)
+            {
+                <a href="?pageNo=@(Model.PageNo - 1)" aria-label="上一頁">←</a>
+            }
+            @for (int p = 1; p <= Model.TotalPages; p++)
+            {
+                if (p == Model.PageNo)
+                {
+                    <span class="is-active">@p</span>
+                }
+                else
+                {
+                    <a href="?pageNo=@p">@p</a>
+                }
+            }
+            @if (Model.PageNo < Model.TotalPages)
+            {
+                <a href="?pageNo=@(Model.PageNo + 1)" aria-label="下一頁">→</a>
+            }
+        </nav>
+    }
+</div>

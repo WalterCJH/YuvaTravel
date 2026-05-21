@@ -1,0 +1,258 @@
+﻿@model HomePageDto
+@{
+    ViewBag.Title = "首頁";
+}
+
+<!-- ===================== HERO BANNER ===================== -->
+<section class="hero" aria-label="主要橫幅">
+    <img class="hero-img"
+         src="https://images.unsplash.com/photo-1493780474015-ba834fd0ce2f?auto=format&fit=crop&w=2000&q=80"
+         alt="京都東山的雨後街道" />
+    <div class="hero-scrim"></div>
+    <img class="hero-mark" src="~/Images/site/logo-mark-light.svg" alt="" />
+    <div class="hero-content">
+        <div class="eyebrow">PRIVATE CURATION · 私訪旅誌</div>
+        <h1 class="hero-title">慢一點 看世界<span class="en">Find the people who know the place.</span></h1>
+        <p class="hero-sub">我們媒合每位旅人與一位真正在地的嚮導，為你客製一段不在攻略上的旅程。</p>
+        <div class="hero-actions">
+            <a href="@StrPath.MatchStart" class="btn btn-on-dark btn-lg" target="_blank" rel="noopener">開始媒合 →</a>
+            <a href="/Guides" class="btn btn-ghost btn-lg">瀏覽嚮導</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== MOSAIC ARTICLES ===================== -->
+<section class="section section-tips">
+    <div class="container">
+        <div class="section-head">
+            <div class="titling">
+                <div class="eyebrow">JOURNAL · 熱門文章</div>
+                <h2 class="h-section">最近的旅誌</h2>
+            </div>
+            <a href="/Category" class="more">所有文章 →</a>
+        </div>
+
+        @if (Model.MosaicArticles.Count > 0)
+        {
+            var feature = Model.MosaicArticles[0];
+            var stack = Model.MosaicArticles.Skip(1).Take(2).ToList();
+
+            <div class="mosaic">
+                <a href="@StrPath.Article("", feature.C)" class="card-feature" aria-label="@feature.Title">
+                    <img src="@(string.IsNullOrEmpty(feature.ImagePath) ? "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1400&q=80" : feature.ImagePath)" alt="@feature.ImageAlt" loading="lazy" decoding="async" />
+                    <div class="body">
+                        <div class="eyebrow">JOURNAL · 01</div>
+                        <h3>@feature.Title</h3>
+                        <span class="views-meta">@feature.ViewCounts.ToString("N0") 觀看@(feature.ReadTimeMin.HasValue ? $" · {feature.ReadTimeMin} 分鐘" : "")</span>
+                    </div>
+                </a>
+
+                <div class="cards-stack">
+                    @for (int i = 0; i < stack.Count; i++)
+                    {
+                        var item = stack[i];
+                        <a href="@StrPath.Article("", item.C)" class="card-h">
+                            <div class="img-wrap">
+                                <img src="@(string.IsNullOrEmpty(item.ImagePath) ? "https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=600&q=80" : item.ImagePath)" alt="@item.ImageAlt" loading="lazy" decoding="async" />
+                            </div>
+                            <div class="body">
+                                <div>
+                                    <div class="eyebrow">JOURNAL · 0@(i + 2)</div>
+                                    <h3>@item.Title</h3>
+                                </div>
+                                <span class="views-meta">@item.ViewCounts.ToString("N0") 觀看</span>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+
+@* <section class="section section-tips section-empty"></section> *@
+
+<!-- ===================== FEATURED ARTICLES (EDITOR PICKS STYLE) ===================== -->
+@if (Model.FeaturedArticles.Count > 0)
+{
+    <section class="search-picks">
+        <div class="container">
+            <div class="section-head">
+                <div class="titling">
+                    <div class="eyebrow">FEATURED · 編輯精選</div>
+                    <h2 class="h-section">精選文章</h2>
+                </div>
+                <a href="/Category" class="more">所有文章 →</a>
+            </div>
+
+            <div class="picks-grid">
+                @for (int i = 0; i < Model.FeaturedArticles.Count; i++)
+                {
+                    var pick = Model.FeaturedArticles[i];
+                    <a href="@StrPath.Article("", pick.C)" class="pick-card">
+                        <div class="pick-card-img">
+                            <img src="@(string.IsNullOrEmpty(pick.ImagePath) ? "https://images.unsplash.com/photo-1493780474015-ba834fd0ce2f?auto=format&fit=crop&w=900&q=80" : pick.ImagePath)" alt="@pick.ImageAlt" loading="lazy" decoding="async" />
+                            <span class="pick-num">@((i + 1).ToString("00"))</span>
+                        </div>
+                        <div class="pick-card-body">
+                            @if (pick.Tags != null && pick.Tags.Count > 0)
+                            {
+                                <span class="pick-tag">#@pick.Tags[0].Name</span>
+                            }
+                            <h3 class="pick-title">@pick.Title</h3>
+                            @if (pick.ReadTimeMin.HasValue)
+                            {
+                                <p class="pick-by">@pick.ReadTimeMin 分鐘 · @pick.ViewCounts.ToString("N0") 觀看</p>
+                            }
+                            else
+                            {
+                                <p class="pick-by">@pick.ViewCounts.ToString("N0") 觀看</p>
+                            }
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<!-- ===================== TIPS BLOCK ===================== -->
+<section class="section section-tips">
+    <div class="container">
+        <div class="section-head">
+            <div class="titling">
+                <div class="eyebrow">TRAVEL NOTES · 旅行小撇步</div>
+                <h2 class="h-section">三個 出發前的小提醒</h2>
+            </div>
+        </div>
+
+        <div class="tips-grid">
+            <article class="tip-card">
+                <div class="num">01</div>
+                <hr />
+                <h3>出發前 一句話寫信給嚮導</h3>
+                <p>不需要長篇大論，告訴嚮導你最想試的一件事就好 — 是想吃一碗早餐，還是想走一條沒有指標的路。一句話，就夠了。</p>
+            </article>
+            <article class="tip-card">
+                <div class="num">02</div>
+                <hr />
+                <h3>帶一本可寫的紙本旅誌</h3>
+                <p>手機記錄太快，紙筆記錄太慢 — 而旅行需要那種剛好慢下來的速度。我們會隨確認信附上一本紙本旅誌。</p>
+            </article>
+            <article class="tip-card">
+                <div class="num">03</div>
+                <hr />
+                <h3>預留一個沒有計畫的早晨</h3>
+                <p>最好的相遇通常不在行程裡。為自己留一個早上，跟著陽光、跟著巷弄、跟著一杯咖啡的氣味走，不為什麼。</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== LOCAL GUIDES ===================== -->
+@if (Model.FeaturedGuides.Count > 0)
+{
+    <section class="section section-guides">
+        <div class="container">
+            <div class="section-head">
+                <div class="titling">
+                    <div class="eyebrow">LOCAL GUIDES · 在地嚮導</div>
+                    <h2 class="h-section">找一個帶你看見真實的人</h2>
+                </div>
+                <a href="/Guides" class="more">所有嚮導 →</a>
+            </div>
+
+            <div class="guides-grid">
+                @foreach (var g in Model.FeaturedGuides)
+                {
+                    <a href="@g.Url" class="guide-card">
+                        <div class="guide-card-img">
+                            <img src="@(string.IsNullOrEmpty(g.PortraitUrl) ? "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" : g.PortraitUrl)" alt="嚮導 @g.Name" loading="lazy" decoding="async" />
+                            @if (g.Regions.Count > 0)
+                            {
+                                <span class="guide-city">@string.Join(" · ", g.Regions.Select(r => r.Name))</span>
+                            }
+                            <span class="guide-rating">★ @g.Rating.ToString("0.0")</span>
+                        </div>
+                        <div class="guide-card-body">
+                            <div class="guide-name-row">
+                                <h3 class="guide-name">@g.Name</h3>
+                                <span class="guide-en">@g.NameEn</span>
+                            </div>
+                            <div class="guide-meta">@g.YearsOfExperience 年在地經驗 · @g.Languages</div>
+                            <p class="guide-bio">@g.Bio</p>
+                            <div class="guide-tags">
+                                @foreach (var t in g.Tags)
+                                {
+                                    <span class="gcard-tag">#@t</span>
+                                }
+                            </div>
+                            <div class="guide-foot">
+                                <span class="guide-articles"><span class="view-dot"></span>@g.ArticleCount 篇旅誌</span>
+                                <span class="guide-cta">看嚮導 →</span>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+
+<!-- ===================== REGIONS ===================== -->
+<section class="section section-tips" ">
+    <div class="container">
+        <div class="section-head">
+            <div class="titling">
+                <div class="eyebrow">REGIONS · 地區</div>
+                <h2 class="h-section">從一個地方開始</h2>
+            </div>
+            <a href="/Region" class="more">所有地區 →</a>
+        </div>
+
+        @if (Model.Regions.Count > 0)
+        {
+            <div class="themes-cloud" role="list">
+                @foreach (var r in Model.Regions)
+                {
+                    <a href="@StrPath.Region("", r.Code)" class="chip" role="listitem">#@r.Name</a>
+                }
+            </div>
+
+            <div class="themes-grid">
+                @foreach (var r in Model.Regions.Take(6))
+                {
+                    <a href="@StrPath.Region("", r.Code)" class="theme-tile">
+                        <img src="@(string.IsNullOrEmpty(r.ImageUrl) ? "https://images.unsplash.com/photo-1493780474015-ba834fd0ce2f?auto=format&fit=crop&w=600&q=80" : r.ImageUrl)" alt="@r.Name" loading="lazy" decoding="async">
+                        <span>@r.Name</span>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+<!-- ===================== NEWSLETTER ===================== -->
+<section class="section-newsletter">
+    <div class="container">
+        <div class="newsletter">
+            <img class="newsletter-mark" src="~/Images/site/logo-mark-light.svg" alt="" />
+            <div>
+                <div class="eyebrow">NEWSLETTER · 每月一封</div>
+                <h2>旅誌訂閱</h2>
+                <p class="lead-on-dark">每月一封，從嚮導手中寄出 — 一篇長文、一份地圖、一則尚未發表的小路線。不打擾，慢慢讀。</p>
+            </div>
+            <div>
+                <form class="newsletter-form" method="post" action="/Subscriber">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="sourcePath" value="@Context.Request.Path@Context.Request.QueryString" />
+                    <input type="email" name="email" required placeholder="your@@email" aria-label="電子信箱" />
+                    <button type="submit" class="btn btn-on-dark">訂閱</button>
+                </form>
+                <p class="footnote">我們不轉售也不轉寄你的信箱。隨時可退訂。</p>
+            </div>
+        </div>
+    </div>
+</section>

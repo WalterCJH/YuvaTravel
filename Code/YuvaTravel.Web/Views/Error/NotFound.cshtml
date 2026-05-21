@@ -1,0 +1,35 @@
+@{
+    ViewBag.Title = "找不到頁面";
+}
+
+@section head_scripts {
+    <partial name="_ErrorStyles" />
+}
+
+<section class="err-page">
+    <div class="err-inner">
+        <img class="err-mark" src="~/Images/site/logo-mark.svg" alt="" />
+        <p class="err-eyebrow">PAGE NOT FOUND · 404</p>
+        <h1 class="err-code">404</h1>
+        <h2 class="err-title">這條路上 沒有風景</h2>
+        <p class="err-lede">
+            你要找的頁面似乎不在這裡 ——<br />
+            可能已經被搬走、改了名字,或從來不曾存在。<br />
+            不如,我們從別的地方再走一次?
+        </p>
+        <div class="err-actions">
+            <a href="/" class="btn btn-lg">回首頁 →</a>
+            <a href="/category" class="btn btn-ghost btn-lg">瀏覽旅誌</a>
+        </div>
+
+        <div class="err-suggest">
+            <div class="err-suggest-label">或者去這些地方</div>
+            <div class="err-links">
+                <a href="/guides">在地嚮導</a>
+                <a href="/tag">所有標籤</a>
+                <a href="/search">搜尋一下</a>
+                <a href="/faq">常見問答</a>
+            </div>
+        </div>
+    </div>
+</section>

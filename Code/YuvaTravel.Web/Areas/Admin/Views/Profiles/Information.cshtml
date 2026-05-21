@@ -1,0 +1,84 @@
+@model InformationDto
+
+
+@{
+    ViewBag.Title = StrText.Information;
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.Profiles"
+                    current="@ViewBag.Title" />
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <partial name="~/Areas/Admin/Views/Profiles/_Profile.cshtml" />
+            <!-- /.col -->
+
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header p-2">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a class="nav-link active" href="#infos" data-toggle="tab">@StrText.Information</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-action="ChangePassword" asp-controller="Profiles" asp-route-area="Admin">@StrText.ChangePassword</a></li>
+                        </ul>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="tab-content">
+
+                            <div class="active tab-pane" id="infos">
+                                <form asp-action="@nameof(StrText.Information)" method="post" class="form-horizontal">
+                                    <input type="hidden" asp-for="UserGuid" />
+
+                                    <div class="form-group row">
+                                        <label asp-for="Name" class="col-sm-2 col-form-label"></label>
+                                        <div class="col-sm-2">
+                                            <input asp-for="LastName" class="form-control" />
+                                            <span asp-validation-for="LastName" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input asp-for="FirstName" class="form-control" />
+                                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label asp-for="Salutation" class="col-sm-2 col-form-label"></label>
+                                        <div class="col-sm-2">
+                                            <select asp-for="Salutation" asp-items="@(new SelectList(ViewBag.Salutations as IEnumerable<string> ?? Enumerable.Empty<string>()))" class="form-control">
+                                                <option value="">(請選擇)</option>
+                                            </select>
+                                            <span asp-validation-for="Salutation" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label asp-for="Email" class="col-sm-2 col-form-label"></label>
+                                        <div class="col-sm-5">
+                                            <input asp-for="Email" class="form-control" />
+                                            <span asp-validation-for="Email" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="offset-sm-2 col-sm-10">
+                                            <button type="submit" class="btn btn-success">確認送出</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.tab-pane -->
+
+                        </div>
+                        <!-- /.tab-content -->
+
+                    </div><!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->

@@ -1,0 +1,428 @@
+@model ArticleCreateOrEdit
+
+@{
+    ViewBag.Title = StrText.Create + StrText.Articles;
+}
+
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.ArticleInfo"
+                    resource="@StrText.Articles"
+                    current="@ViewBag.Title" />
+}
+
+
+<form asp-action="@nameof(StrText.Create)" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="ImageFileBase64" />
+    <input type="hidden" asp-for="ImageFileName" />
+    <input type="hidden" asp-for="ImageFileType" />
+    <input type="hidden" asp-for="ImageMobileFileBase64" />
+    <input type="hidden" asp-for="ImageMobileFileName" />
+    <input type="hidden" asp-for="ImageMobileFileType" />
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.ArticleSDCommonQuestion</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body sortable">
+                        @foreach (var item in Model.ArticleSDCommonQuestions)
+                        {
+                            <partial name="~/Areas/Admin/Views/Articles/_StructuredDataCommonQuestion.cshtml" model="item" />
+                        }
+                        <div class="col-12 text-center pr-0 js-sortable-cancel" id="StructuredDataCommonQuestion">
+                            <button type="button" class="btn btn-primary btn-sm" id="AddRow_StructuredDataCommonQuestion">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.Generally</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="ArticleType" class="control-label col-md-12"></label>
+                            <cus-enum-select asp-for="ArticleType" default-text="" class="form-control" />
+                            <span asp-validation-for="ArticleType" class="text-danger"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <cus-checkbox asp-for="IsTop" />
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <cus-checkbox asp-for="IsFeaturedArticle" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <label asp-for="DisplaySeq" class="control-label col-md-12"></label>
+                                <input asp-for="DisplaySeq" class="form-control" />
+                                <span asp-validation-for="DisplaySeq" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label asp-for="FeaturedArticleDisplaySeq" class="control-label col-md-12"></label>
+                                <input asp-for="FeaturedArticleDisplaySeq" class="form-control" />
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label asp-for="ReadTimeMin" class="control-label col-md-12"></label>
+                                <input asp-for="ReadTimeMin" class="form-control" type="number" min="0" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AuthorId" class="control-label col-md-12"></label>
+                            <select asp-for="AuthorId"
+                                    asp-items="@(ViewBag.AuthorSelectList as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)"
+                                    class="form-control">
+                                <option value="">(請選擇作者)</option>
+                            </select>
+                            <span asp-validation-for="AuthorId" class="text-danger"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label asp-for="OnlineTime" class="control-label col-md-12"></label>
+                                <cus-datetime asp-for="OnlineTime" />
+                                <span asp-validation-for="OnlineTime" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label asp-for="OnScheduleTime" class="control-label col-md-12"></label>
+                                <cus-datetime asp-for="OnScheduleTime" />
+                                <span asp-validation-for="OnScheduleTime" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PromotionCode" class="control-label col-md-12"></label>
+                            <input asp-for="PromotionCode" class="form-control" />
+                            <span asp-validation-for="PromotionCode" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Code" class="control-label col-md-12"></label>
+                            <input asp-for="Code" class="form-control" />
+                            <span asp-validation-for="Code" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Title" class="control-label col-md-12"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label col-md-12"></label>
+                            <textarea asp-for="Description" class="form-control" maxlength="500" rows="5"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Content" class="control-label col-md-12"></label>
+                            <cus-ckeditor asp-for="Content" />
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <div class="col-md-6">
+                <div class="card card-primary js-event-row">
+                    <div class="card-header">
+                        <h3 class="card-title">活動內容</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="EventLocation" class="control-label col-md-12"></label>
+                            <input asp-for="EventLocation" class="form-control" />
+                            <span asp-validation-for="EventLocation" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EventStarNum" class="control-label col-md-12"></label>
+                            <input asp-for="EventStarNum" class="form-control" />
+                            <span asp-validation-for="EventStarNum" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EventCount" class="control-label col-md-12"></label>
+                            <input asp-for="EventCount" class="form-control" />
+                            <span asp-validation-for="EventCount" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EventPrice" class="control-label col-md-12"></label>
+                            <input asp-for="EventPrice" class="form-control" />
+                            <span asp-validation-for="EventPrice" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EventDiscount" class="control-label col-md-12"></label>
+                            <input asp-for="EventDiscount" class="form-control" />
+                            <span asp-validation-for="EventDiscount" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EventDiscountValue" class="control-label col-md-12"></label>
+                            <input asp-for="EventDiscountValue" class="form-control" />
+                            <span asp-validation-for="EventDiscountValue" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.ArticleCategory</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row js-section-div">
+                            <div class="col-12 mb-3 pl-0">
+                                <div class="custom-control custom-checkbox">
+                                    <input asp-for="CheckAll" class="custom-control-input js-section-checkAll" />
+                                    <label asp-for="CheckAll" class="custom-control-label"></label>
+                                </div>
+                            </div>
+                            @for (int i = 0; i < Model.ArticleCategories.Count(); i++)
+                            {
+                                var category = Model.ArticleCategories[i];
+                                string checkGroupId = $"ArticleCategories[{i}].IsActive";
+
+                                <div class="col-4 col-xl-2 btn btn-default">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="@checkGroupId" value="true" @(category.IsActive ? "checked" : "") class="custom-control-input" id="@checkGroupId" />
+                                        <input type="hidden" name="@checkGroupId" value="false" />
+                                        <label for="@checkGroupId" class="custom-control-label">@category.Name</label>
+                                        <input type="hidden" name="ArticleCategories[@i].Name" value="@category.Name" />
+                                        <input type="hidden" name="ArticleCategories[@i].ArticleCategoryId" value="@category.ArticleCategoryId" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.Regions</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.Regions.Count == 0)
+                        {
+                            <small class="text-muted">尚未建立任何地區,請先到「地區」管理新增。</small>
+                        }
+                        else
+                        {
+                            <div class="row js-section-div">
+                                <div class="col-12 mb-3 pl-0">
+                                    <div class="custom-control custom-checkbox">
+                                        <input asp-for="CheckAllRegions" class="custom-control-input js-section-checkAll" />
+                                        <label asp-for="CheckAllRegions" class="custom-control-label"></label>
+                                    </div>
+                                </div>
+                                @for (int i = 0; i < Model.Regions.Count(); i++)
+                                {
+                                    var region = Model.Regions[i];
+                                    string checkGroupId = $"Regions[{i}].IsActive";
+
+                                    <div class="col-4 col-xl-2 btn btn-default">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" name="@checkGroupId" value="true" @(region.IsActive ? "checked" : "") class="custom-control-input" id="@checkGroupId" />
+                                            <input type="hidden" name="@checkGroupId" value="false" />
+                                            <label for="@checkGroupId" class="custom-control-label">@region.Name</label>
+                                            <input type="hidden" name="Regions[@i].Name" value="@region.Name" />
+                                            <input type="hidden" name="Regions[@i].RegionId" value="@region.RegionId" />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.Tags</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <cus-select2-tag asp-for="TagIds"></cus-select2-tag>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.Image</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <img src="/Images/empty.jpg" class="img-adaptive" id="image-file-preview" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ImageFile" class="control-label col-md-12"></label>
+                            <input asp-for="ImageFile" type="file" class="form-control" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ImageTitle" class="control-label col-md-12"></label>
+                            <input asp-for="ImageTitle" class="form-control" />
+                            <span asp-validation-for="ImageTitle" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ImageAlt" class="control-label col-md-12"></label>
+                            <input asp-for="ImageAlt" class="form-control" />
+                            <span asp-validation-for="ImageAlt" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.Meta</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="MetaTitle" class="control-label col-md-12"></label>
+                            <input asp-for="MetaTitle" class="form-control" />
+                            <span asp-validation-for="MetaTitle" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MetaDescription" class="control-label col-md-12"></label>
+                            <input asp-for="MetaDescription" class="form-control" />
+                            <span asp-validation-for="MetaDescription" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <a asp-action="@nameof(StrText.Index)" class="btn btn-secondary">@StrText.ReturnIndex</a>
+                <input type="submit" value="@StrText.Save" class="btn btn-success float-right">
+            </div>
+        </div>
+    </section>
+</form>
+
+@section Scripts {
+    <script src="~/Scripts/select2.js"></script>
+    <script src="~/Scripts/select2/tag-select2.js"></script>
+    <script src="~/Scripts/jquery-ui.min.js"></script>
+    <script src="~/Scripts/article.js"></script>
+    <script src="~/Scripts/check-all.js"></script>
+    <script>
+        $(function () {
+            $("input[type='submit']").click(function () {
+                var confirmMsg =
+                    `請確認以下內容：
+1. Meta標題、Meta敘述、文章標題、圖片alt是否皆已編寫完成並帶入欲操作關鍵字？
+2. 段落標題與內文是否帶入關鍵字並設定H標籤、顏色、strong標籤？
+3. 是否已加上標籤，並帶入欲操作關鍵字？
+4. 主圖與內文圖片是否都已上傳並加入alt？
+5. 是否已加入文章目錄？`;
+
+                if (!confirm(confirmMsg)) {
+                    return false;
+                }
+            });
+
+            if ($('#ImageFileBase64').val() != null && $('#ImageFileBase64').val() != '') {
+                $('#image-file-preview').attr('src', $('#ImageFileBase64').val());
+            }
+
+            $("#ImageFile").change(function () {
+                if ($("#ImageFile").val() != "") {
+                    if (this.files && this.files[0]) {
+                        var fileName = this.files[0].name;
+                        var fileType = this.files[0].type;
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $('#image-file-preview').attr('src', e.target.result);
+                            $('#ImageFileBase64').val(e.target.result);
+                            $('#ImageFileName').val(fileName);
+                            $('#ImageFileType').val(fileType);
+                        }
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                }
+            });
+
+            if ($('#ImageMobileFileBase64').val() != null && $('#ImageMobileFileBase64').val() != '') {
+                $('#image-mobile-file-preview').attr('src', $('#ImageMobileFileBase64').val());
+            }
+
+            $("#ImageMobileFile").change(function () {
+                if ($("#ImageMobileFile").val() != "") {
+                    if (this.files && this.files[0]) {
+                        var fileName = this.files[0].name;
+                        var fileType = this.files[0].type;
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $('#image-mobile-file-preview').attr('src', e.target.result);
+                            $('#ImageMobileFileBase64').val(e.target.result);
+                            $('#ImageMobileFileName').val(fileName);
+                            $('#ImageMobileFileType').val(fileType);
+                        }
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                }
+            });
+        });
+    </script>
+    }
+

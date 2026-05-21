@@ -1,0 +1,29 @@
+@{
+    ViewBag.Title = "發生錯誤";
+    var requestId = Context.TraceIdentifier;
+}
+
+@section head_scripts {
+    <partial name="_ErrorStyles" />
+}
+
+<section class="err-page">
+    <div class="err-inner">
+        <img class="err-mark" src="~/Images/site/logo-mark.svg" alt="" />
+        <p class="err-eyebrow">SERVER ERROR · 500</p>
+        <h1 class="err-code">500</h1>
+        <h2 class="err-title">我們這邊出了一點小狀況</h2>
+        <p class="err-lede">
+            嚮導正在低頭翻地圖 —— 請稍後再試一次,<br />
+            如果一直看到這個頁面,寫信告訴我們會更快。
+        </p>
+        <div class="err-actions">
+            <a href="/" class="btn btn-lg">回首頁 →</a>
+            <a href="javascript:history.back()" class="btn btn-ghost btn-lg">回上一頁</a>
+        </div>
+
+        <div class="err-meta">
+            REQUEST ID · <code>@requestId</code>
+        </div>
+    </div>
+</section>

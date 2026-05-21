@@ -1,0 +1,165 @@
+@model Guide
+
+@{
+    ViewBag.Title = StrText.Delete + StrText.Guides;
+    var routeCount = Model.GuideRoutes?.Count ?? 0;
+    var reviewCount = Model.GuideReviews?.Count ?? 0;
+    var faqCount = Model.GuideFaqs?.Count ?? 0;
+    var authorRows = Model.Authors?.OrderBy(p => p.DisplaySeq).ToList();
+    var articleCount = Model.Authors?.SelectMany(a => a.Articles ?? new List<Article>()).Count() ?? 0;
+    var tagRows = Model.GuideTags?.OrderBy(p => p.DisplaySeq).ToList();
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.Guides"
+                    resource="@StrText.Guides"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Delete)" method="post">
+    <input type="hidden" name="id" value="@Model.GuideId" />
+    <section class="content js-disabled">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card card-primary">
+                    <div class="card-header"><h3 class="card-title">@StrText.Generally</h3></div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-3">啟用</dt><dd class="col-sm-9">@(Model.IsActive ? "是" : "否")</dd>
+                            <dt class="col-sm-3">本月精選</dt><dd class="col-sm-9">@(Model.IsFeatured ? "是" : "否")</dd>
+                            <dt class="col-sm-3">代碼</dt><dd class="col-sm-9">@Model.Code</dd>
+                            <dt class="col-sm-3">中文名</dt><dd class="col-sm-9">@Model.Name</dd>
+                            <dt class="col-sm-3">英文名</dt><dd class="col-sm-9">@Model.NameEn</dd>
+                            <dt class="col-sm-3">@StrText.Regions</dt><dd class="col-sm-9">@string.Join("、", Model.GuideRegions?.OrderBy(r => r.Region.DisplaySeq).Select(r => r.Region.Name) ?? Enumerable.Empty<string>())</dd>
+                            <dt class="col-sm-3">在地年數</dt><dd class="col-sm-9">@Model.YearsOfExperience</dd>
+                            <dt class="col-sm-3">語言</dt><dd class="col-sm-9">@Model.Languages</dd>
+                            <dt class="col-sm-3">短簡介</dt><dd class="col-sm-9">@Model.Bio</dd>
+                            <dt class="col-sm-3">完整介紹</dt><dd class="col-sm-9">@Html.Raw(Model.LongBio)</dd>
+                            <dt class="col-sm-3">語錄</dt><dd class="col-sm-9">@Model.QuoteText @(string.IsNullOrEmpty(Model.QuoteBy) ? "" : "— " + Model.QuoteBy)</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                @if (tagRows != null && tagRows.Count > 0)
+                {
+                    <div class="card card-warning">
+                        <div class="card-header"><h3 class="card-title">@StrText.Tags</h3></div>
+                        <div class="card-body">
+                            @foreach (var t in tagRows)
+                            {
+                                <span class="badge badge-secondary mr-1" style="font-size:0.95rem">#@t.Tag?.Name</span>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @if (authorRows != null && authorRows.Count > 0)
+                {
+                    <div class="card card-warning">
+                        <div class="card-header"><h3 class="card-title">關聯作者 (共 @articleCount 篇文章)</h3></div>
+                        <div class="card-body p-0">
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                    <tr><th style="width:25%">作者</th><th>關聯文章</th></tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var a in authorRows)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a asp-area="Admin" asp-controller="Authors" asp-action="Edit" asp-route-id="@a.AuthorId" target="_blank">
+                                                    @a.Name
+                                                </a>
+                                            </td>
+                                            <td>
+                                                @if (a.Articles != null && a.Articles.Count > 0)
+                                                {
+                                                    foreach (var art in a.Articles.OrderByDescending(p => p.OnlineTime))
+                                                    {
+                                                        <div>
+                                                            <a asp-area="Admin" asp-controller="Articles" asp-action="Edit" asp-route-id="@art.ArticleId" target="_blank">
+                                                                @art.Title
+                                                            </a>
+                                                        </div>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">(無文章)</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-primary">
+                    <div class="card-header"><h3 class="card-title">服務 / 評分</h3></div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-5">評分</dt><dd class="col-sm-7">★ @Model.Rating.ToString("0.0")</dd>
+                            <dt class="col-sm-5">評論數</dt><dd class="col-sm-7">@Model.ReviewCount</dd>
+                            <dt class="col-sm-5">服務形式</dt><dd class="col-sm-7">@Model.ServiceFormat</dd>
+                            <dt class="col-sm-5">適合人數</dt><dd class="col-sm-7">@Model.MinPeople – @Model.MaxPeople 人</dd>
+                            <dt class="col-sm-5">回覆時間</dt><dd class="col-sm-7">@Model.ResponseTime</dd>
+                            <dt class="col-sm-5">起價</dt><dd class="col-sm-7">@(Model.StartingPrice.HasValue ? "NT$ " + Model.StartingPrice.Value.ToString("N0") : "")</dd>
+                            <dt class="col-sm-5">順序</dt><dd class="col-sm-7">@Model.DisplaySeq</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="card card-info">
+                    <div class="card-header"><h3 class="card-title">子表統計</h3></div>
+                    <div class="card-body">
+                        <p>
+                            <a asp-controller="GuideRoutes" asp-action="Index" asp-route-guideId="@Model.GuideId">
+                                <i class="fas fa-route"></i> 路線：<strong>@routeCount</strong> 條
+                            </a>
+                        </p>
+                        <p>
+                            <a asp-controller="GuideReviews" asp-action="Index" asp-route-guideId="@Model.GuideId">
+                                <i class="fas fa-star"></i> 評論：<strong>@reviewCount</strong> 則
+                            </a>
+                        </p>
+                        <p>
+                            <a asp-controller="GuideFaqs" asp-action="Index" asp-route-guideId="@Model.GuideId">
+                                <i class="fas fa-question"></i> FAQ：<strong>@faqCount</strong> 題
+                            </a>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card card-primary">
+                    <div class="card-header"><h3 class="card-title">圖片</h3></div>
+                    <div class="card-body">
+                        @if (!string.IsNullOrEmpty(Model.PortraitUrl))
+                        {
+                            <p><strong>肖像 (寬 600px)</strong></p>
+                            <p><img src="@Model.PortraitUrl" alt="肖像" class="img-fluid" style="max-height:240px" /></p>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.CoverUrl))
+                        {
+                            <p><strong>封面 (寬 2000px)</strong></p>
+                            <p><img src="@Model.CoverUrl" alt="封面" class="img-fluid" /></p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <a asp-action="@nameof(StrText.Index)" class="btn btn-secondary">@StrText.ReturnIndex</a>
+                <a asp-controller="GuideRoutes" asp-action="Index" asp-route-guideId="@Model.GuideId" class="btn btn-outline-secondary"><i class="fas fa-route"></i> 路線</a>
+                <a asp-controller="GuideReviews" asp-action="Index" asp-route-guideId="@Model.GuideId" class="btn btn-outline-secondary"><i class="fas fa-star"></i> 評論</a>
+                <a asp-controller="GuideFaqs" asp-action="Index" asp-route-guideId="@Model.GuideId" class="btn btn-outline-secondary"><i class="fas fa-question"></i> FAQ</a>
+                <input type="submit" value="@StrText.ConfirmDelete" class="btn btn-danger float-right js-delete-confirm">
+            </div>
+        </div>
+    </section>
+</form>

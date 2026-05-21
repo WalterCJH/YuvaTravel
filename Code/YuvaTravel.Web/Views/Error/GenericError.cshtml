@@ -1,0 +1,30 @@
+@{
+    var statusCode = Context.Response.StatusCode;
+    ViewBag.Title = $"發生錯誤 ({statusCode})";
+    var requestId = Context.TraceIdentifier;
+}
+
+@section head_scripts {
+    <partial name="_ErrorStyles" />
+}
+
+<section class="err-page">
+    <div class="err-inner">
+        <img class="err-mark" src="~/Images/site/logo-mark.svg" alt="" />
+        <p class="err-eyebrow">ERROR · @statusCode</p>
+        <h1 class="err-code">@statusCode</h1>
+        <h2 class="err-title">處理你的請求時 發生了一些事</h2>
+        <p class="err-lede">
+            我們暫時沒辦法完成你的請求 ——<br />
+            可以先回首頁,或稍後再試一次。
+        </p>
+        <div class="err-actions">
+            <a href="/" class="btn btn-lg">回首頁 →</a>
+            <a href="javascript:history.back()" class="btn btn-ghost btn-lg">回上一頁</a>
+        </div>
+
+        <div class="err-meta">
+            REQUEST ID · <code>@requestId</code>
+        </div>
+    </div>
+</section>

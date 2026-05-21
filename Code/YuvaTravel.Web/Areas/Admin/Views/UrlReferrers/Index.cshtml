@@ -1,0 +1,33 @@
+@model UrlReferrerExport
+
+@{
+    ViewBag.Title = StrText.UrlReferrers + StrText.Index;
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.WebPageInfo"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Index)" method="post">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-4">
+                        <cus-daterange asp-for="RangeTime" />
+                        <span asp-validation-for="RangeTime" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                @if (ViewBag.IsExport)
+                {
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-file-export"></i>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</form>

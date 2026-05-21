@@ -1,0 +1,24 @@
+@model GuideFaqCreateOrEdit
+@{
+    ViewBag.Title = StrText.Delete + StrText.GuideFaqs;
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.Guides"
+                    resource="@StrText.GuideFaqs"
+                    resource-route-guideId="@Model.GuideId"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Delete)" method="post">
+    <input type="hidden" name="id" value="@Model.GuideFaqId" />
+    <section class="content js-disabled">
+        <fieldset disabled>
+            <partial name="_Form" model="Model" />
+        </fieldset>
+        <div class="row"><div class="col-12">
+            <a asp-action="@nameof(StrText.Index)" asp-route-guideId="@Model.GuideId" class="btn btn-secondary">@StrText.ReturnIndex</a>
+            <input type="submit" value="@StrText.ConfirmDelete" class="btn btn-danger float-right js-delete-confirm">
+        </div></div>
+    </section>
+</form>

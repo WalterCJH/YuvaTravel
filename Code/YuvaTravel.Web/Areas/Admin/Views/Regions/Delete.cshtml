@@ -1,0 +1,67 @@
+@model Region
+@{
+    ViewBag.Title = StrText.Delete + StrText.Regions;
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.ArticleInfo"
+                    resource="@StrText.Regions"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Delete)" method="post">
+    <input type="hidden" name="id" value="@Model.RegionId" />
+    <section class="content js-disabled">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card card-primary">
+                    <div class="card-header"><h3 class="card-title">@StrText.Generally</h3></div>
+                    <div class="card-body">
+                        <div class="form-group"><cus-checkbox asp-for="IsActive" hide-label="true" /></div>
+                        <div class="form-group">
+                            <label asp-for="Code" class="control-label col-md-12"></label>
+                            <input asp-for="Code" class="form-control" readonly />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label asp-for="Name" class="control-label col-md-12"></label>
+                                <input asp-for="Name" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label asp-for="NameEn" class="control-label col-md-12"></label>
+                                <input asp-for="NameEn" class="form-control" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label col-md-12"></label>
+                            <textarea asp-for="Description" class="form-control" rows="3" readonly></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="DisplaySeq" class="control-label col-md-12"></label>
+                            <input asp-for="DisplaySeq" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-secondary">
+                    <div class="card-header"><h3 class="card-title">圖片 (200×200)</h3></div>
+                    <div class="card-body">
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <img src="@Model.ImageUrl" style="width:200px;height:200px;object-fit:cover;border-radius:8px;" alt="@Model.Name" />
+                        }
+                        else
+                        {
+                            <small class="text-muted">未設定</small>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row"><div class="col-12">
+            <a asp-action="@nameof(StrText.Index)" class="btn btn-secondary">@StrText.ReturnIndex</a>
+            <input type="submit" value="@StrText.ConfirmDelete" class="btn btn-danger float-right js-delete-confirm">
+        </div></div>
+    </section>
+</form>

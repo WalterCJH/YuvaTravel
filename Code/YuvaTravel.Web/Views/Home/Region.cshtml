@@ -1,0 +1,192 @@
+@model CategoryListDto
+@{
+    ViewBag.Title = string.IsNullOrEmpty(Model.CurrentName) ? "地區" : $"{Model.CurrentName} · 地區";
+}
+
+@section head_scripts {
+    <link rel="stylesheet" href="~/Content/site/category.css" />
+}
+
+<!-- ===================== REGION HEADER ===================== -->
+<section class="cat-header">
+    <div class="container">
+        <nav class="breadcrumb" aria-label="麵包屑">
+            <a href="/">首頁</a>
+            <span class="sep">/</span>
+            <a href="/Region">地區</a>
+            @if (!string.IsNullOrEmpty(Model.Id))
+            {
+                <span class="sep">/</span>
+                <span class="here">@Model.CurrentName</span>
+            }
+        </nav>
+
+        <div class="cat-titling">
+            <div class="eyebrow">REGION · 地區</div>
+            <h1 class="cat-title">
+                @Model.CurrentName
+                @if (!string.IsNullOrEmpty(Model.CurrentNameEn))
+                {
+                    <span class="en">@Model.CurrentNameEn</span>
+                }
+            </h1>
+            @if (!string.IsNullOrEmpty(Model.CurrentDescription))
+            {
+                <p class="cat-lede">@Html.Raw(Model.CurrentDescription)</p>
+            }
+            <div class="cat-meta">
+                <span><strong>@Model.CurrentArticleCount</strong> 篇旅誌</span>
+                @if (Model.CurrentGuideCount > 0)
+                {
+                    <span class="dot">·</span>
+                    <span><strong>@Model.CurrentGuideCount</strong> 位在地嚮導</span>
+                }
+                <span class="dot">·</span>
+                <span class="text-en"><em>Find the people who know the place.</em></span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== REGION FILTER STRIP ===================== -->
+<section class="cat-filter" aria-label="地區篩選">
+    <div class="container">
+        <div class="cat-filter-row">
+            <div class="chip-rail" role="tablist" aria-label="地區分類">
+                <a href="/Region" class="chip @(string.IsNullOrEmpty(Model.Id) ? "is-active" : "")" @(string.IsNullOrEmpty(Model.Id) ? "aria-current=true" : "")>全部 <span class="chip-count">@Model.AllRegions.Sum(c => c.ArticleCount)</span></a>
+                @foreach (var r in Model.AllRegions)
+                {
+                    <a href="@StrPath.Region("", r.Code)" class="chip @(Model.Id == r.Code ? "is-active" : "")" @(Model.Id == r.Code ? "aria-current=true" : "")>
+                        @r.Name <span class="chip-count">@r.ArticleCount</span>
+                    </a>
+                }
+            </div>
+            <form method="get" action="@(string.IsNullOrEmpty(Model.Id) ? "/Region" : $"/Region/{Model.Id}")" class="sort-control">
+                <span class="sort-label">排序</span>
+                <select name="sortBy" aria-label="排序方式" onchange="this.form.submit()">
+                    <option value="newest" selected="@(Model.SortBy == "newest")">最新發布</option>
+                    <option value="views" selected="@(Model.SortBy == "views")">最多觀看</option>
+                </select>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== ARTICLE LIST ===================== -->
+<section class="article-list-wrap">
+    <div class="container">
+
+        @if (Model.Articles.Count > 0)
+        {
+            <ol class="article-list" aria-label="@Model.CurrentName — 文章列表">
+                @for (int i = 0; i < Model.Articles.Count; i++)
+                {
+                    var item = Model.Articles[i];
+                    var seq = (Model.PageNo - 1) * Model.PageSize + i + 1;
+                    <li>
+                        <a href="@StrPath.Article("", item.C)" class="list-card">
+                            <div class="list-card-img">
+                                <img src="@(string.IsNullOrEmpty(item.ImagePath) ? "https://images.unsplash.com/photo-1493780474015-ba834fd0ce2f?auto=format&fit=crop&w=900&q=80" : item.ImagePath)" alt="@item.ImageAlt" loading="lazy" decoding="async" />
+                            </div>
+                            <div class="list-card-body">
+                                <div class="list-card-meta">
+                                    <span class="eyebrow">JOURNAL · @seq.ToString("00")</span>
+                                    <span class="dot">·</span>
+                                    <span>@item.PublishDate</span>
+                                </div>
+                                <h2 class="list-card-title">@item.Title</h2>
+                                <p class="list-card-excerpt">@item.Description</p>
+                                <div class="list-card-foot">
+                                    <div class="list-tags">
+                                        @if (item.Tags != null)
+                                        {
+                                            foreach (var tag in item.Tags.Take(3))
+                                            {
+                                                <span class="tag-chip">#@tag.Name</span>
+                                            }
+                                        }
+                                    </div>
+                                    <span class="list-card-stat">
+                                        <span class="views"><span class="view-dot"></span>@item.ViewCounts.ToString("N0")</span>
+                                        @if (item.ReadTimeMin.HasValue)
+                                        {
+                                            <span class="dot">·</span>
+                                            <span>@item.ReadTimeMin 分鐘</span>
+                                        }
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                }
+            </ol>
+        }
+        else
+        {
+            <p style="text-align:center; padding: 60px 0; color: rgba(0,0,0,.45);">這個地區目前還沒有文章。</p>
+        }
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav class="pagination" aria-label="分頁">
+                @if (Model.PageNo > 1)
+                {
+                    <a href="?pageNo=@(Model.PageNo - 1)&sortBy=@Model.SortBy" class="page-btn">← 上一頁</a>
+                }
+                else
+                {
+                    <a href="#" class="page-btn is-disabled" aria-disabled="true">← 上一頁</a>
+                }
+                <ol class="page-numbers">
+                    @for (int p = 1; p <= Model.TotalPages; p++)
+                    {
+                        if (p == Model.PageNo)
+                        {
+                            <li><a href="#" class="page-num is-active" aria-current="true">@p</a></li>
+                        }
+                        else
+                        {
+                            <li><a href="?pageNo=@p&sortBy=@Model.SortBy" class="page-num">@p</a></li>
+                        }
+                    }
+                </ol>
+                @if (Model.PageNo < Model.TotalPages)
+                {
+                    <a href="?pageNo=@(Model.PageNo + 1)&sortBy=@Model.SortBy" class="page-btn">下一頁 →</a>
+                }
+                else
+                {
+                    <a href="#" class="page-btn is-disabled" aria-disabled="true">下一頁 →</a>
+                }
+            </nav>
+        }
+
+    </div>
+</section>
+
+<!-- ===================== HOT TAGS IN THIS REGION ===================== -->
+@if (Model.HotTags.Count > 0)
+{
+    <section class="hot-tags">
+        <div class="container">
+            <div class="section-head">
+                <div class="titling">
+                    <div class="eyebrow">TAGS · 本地區熱門標籤</div>
+                    <h2 class="h-section">@(string.IsNullOrEmpty(Model.CurrentName) ? "所有" : Model.CurrentName)旅人,都在談這些</h2>
+                </div>
+                @* <a href="/Tag" class="more">看所有標籤 →</a> *@
+            </div>
+
+            <div class="hot-tags-cloud">
+                @foreach (var tag in Model.HotTags)
+                {
+                    var size = tag.Count >= 15 ? "lg" : (tag.Count >= 8 ? "md" : "sm");
+                    <a href="@StrPath.Tag(tag.Name)" class="tag-pill" data-size="@size">
+                        <span class="tag-pill-name">#@tag.Name</span>
+                        <span class="tag-pill-count">@tag.Count 篇</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}

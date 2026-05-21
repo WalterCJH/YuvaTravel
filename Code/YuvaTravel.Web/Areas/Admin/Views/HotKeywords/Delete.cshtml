@@ -1,0 +1,64 @@
+@model HotKeyword
+
+@{
+    ViewBag.Title = StrText.Delete + StrText.HotKeywords;
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.WebPageInfo"
+                    resource="@StrText.HotKeywords"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Delete)" method="post">
+    <input type="hidden" asp-for="HotKeywordId" />
+
+    <!-- Main content -->
+    <section class="content js-disabled">
+        <div class="row">
+            <div class="col-12">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.Generally</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <cus-checkbox asp-for="IsActive" hide-label="true" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label col-md-12"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="DisplaySeq" class="control-label col-md-12"></label>
+                            <input asp-for="DisplaySeq" class="form-control" />
+                            <span asp-validation-for="DisplaySeq" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <a asp-action="@nameof(StrText.Index)" class="btn btn-secondary">@StrText.ReturnIndex</a>
+                <input type="submit" value="@StrText.ConfirmDelete" class="btn btn-danger float-right js-delete-confirm">
+            </div>
+        </div>
+    </section>
+</form>
+
+@section Scripts {
+    }

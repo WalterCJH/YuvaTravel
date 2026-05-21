@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>YuvaTravel.Infrastructure</RootNamespace>
+    <AssemblyName>YuvaTravel.Infrastructure</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 提供 ActionFilterAttribute、HttpContext 等 ASP.NET Core 型別 -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="4.0.23" />
+    <PackageReference Include="SkiaSharp" Version="3.119.2" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="3.119.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\YuvaTravel.Base\YuvaTravel.Base.csproj" />
+  </ItemGroup>
+
+  <!-- 排除舊式 NuGet content 資料夾 -->
+  <ItemGroup>
+    <None Remove="content\**" />
+  </ItemGroup>
+
+</Project>

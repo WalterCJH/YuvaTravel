@@ -1,0 +1,247 @@
+@model ArticleFilter
+
+
+@{
+    ViewBag.Title = StrText.Articles + StrText.Index;
+    var listData = ViewBag.ListData as IEnumerable<Article>;
+    object SetRouteValue(string sortBy, string sortDirection, int? pageNo = null)
+    {
+        int? articleReviewType = null;
+        if (Model.ArticleReviewType != null)
+        {
+            articleReviewType = (int)Model.ArticleReviewType;
+        }
+
+        var value = new { SortBy = sortBy, SortDirection = sortDirection, PageNo = pageNo, Keyword = Model.Keyword, ArticleReviewType = articleReviewType, ArticleCategoryId = Model.ArticleCategoryId, Author = Model.Author };
+
+        return value;
+    }
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.ArticleInfo"
+                    current="@ViewBag.Title" />
+}
+
+@section scripts{
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+    </script>
+}
+
+<form asp-action="@nameof(StrText.Index)" method="get">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-3 col-4">
+                        <label asp-for="ArticleReviewType" class="control-label col-12"></label>
+                        <cus-enum-select asp-for="ArticleReviewType" class="form-control" />
+                    </div>
+                    <div class="col-md-3 col-4">
+                        <label asp-for="ArticleCategoryId" class="control-label col-12"></label>
+                        <select asp-for="ArticleCategoryId" asp-items="@(new SelectList(ViewBag.ArticleCategoryId as IEnumerable<ArticleCategory> ?? Enumerable.Empty<ArticleCategory>(), "ArticleCategoryId", "Name"))" class="form-control">
+                            <option value="">(請選擇)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-4">
+                        <label asp-for="Author" class="control-label col-12"></label>
+                        <select asp-for="Author" asp-items="@(new SelectList(ViewBag.Author as IEnumerable<KeyValuePair<string, string>> ?? Enumerable.Empty<KeyValuePair<string, string>>(), "Value", "Key"))" class="form-control">
+                            <option value="">(請選擇)</option>
+                        </select>
+                    </div>
+                    <div class="col-12 mb-3"></div>
+                    <div class="col-md-9 col-12">
+                        <label asp-for="Keyword" class="control-label col-12"></label>
+                        <input asp-for="Keyword" class="form-control" placeholder="請輸入代碼、標題" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-secondary js-search-clear" title="清除搜尋欄位">
+                    <i class="fas fa-broom"></i>
+                </button>
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<section class="content">
+
+    @Html.PagedListPager(listData as IPagedList, (p) => Url.Action(nameof(StrText.Index), SetRouteValue(Model.SortBy, Model.SortDirection, p)),
+    new PagedListRenderOptions
+    {
+        LiElementClasses = new string[] { "paginate_button page-item previous" },
+        PageClasses = new string[] { "page-link" },
+        DisplayLinkToFirstPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always
+    })
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">@StrText.Index</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped projects">
+                <thead>
+                    <tr>
+                        <th style="width: 8%">
+                            <cus-display-name for-type="@typeof(Article)" property="ArticleReviewType" />
+                        </th>
+                        <th style="width: 5%">
+                            預覽
+                        </th>
+                        <th style="width: 6%">
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("DisplaySeq", nameof(StrText.ASC)))"><i class="fas fa-sort-numeric-up"></i></a>
+                            <cus-display-name for-type="@typeof(Article)" property="DisplaySeq" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("DisplaySeq", nameof(StrText.DESC)))"><i class="fas fa-sort-numeric-down-alt"></i></a>
+                        </th>
+                        <th style="width: 8%">
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("Views", nameof(StrText.ASC)))"><i class="fas fa-sort-numeric-up"></i></a>
+                            <cus-display-name for-type="@typeof(Article)" property="Views" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("Views", nameof(StrText.DESC)))"><i class="fas fa-sort-numeric-down-alt"></i></a>
+                        </th>
+                        <th style="width: 7%">
+                            <cus-display-name for-type="@typeof(Article)" property="PromotionCode" />
+                        </th>
+                        <th style="width: 10%">
+                            <cus-display-name for-type="@typeof(Article)" property="Author" />
+                        </th>
+                        <th style="width: 8%">
+                            <cus-display-name for-type="@typeof(Article)" property="ArticleCategoryArticles" />
+                        </th>
+                        <th style="width: 13%">
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("Code", nameof(StrText.ASC)))"><i class="fas fa-sort-alpha-up"></i></a>
+                            <cus-display-name for-type="@typeof(Article)" property="Code" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("Code", nameof(StrText.DESC)))"><i class="fas fa-sort-alpha-down-alt"></i></a>
+                        </th>
+                        <th>
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("Title", nameof(StrText.ASC)))"><i class="fas fa-sort-amount-up-alt"></i></a>
+                            <cus-display-name for-type="@typeof(Article)" property="Title" />
+                            <a href="@Url.Action(nameof(StrText.Index), SetRouteValue("Title", nameof(StrText.DESC)))"><i class="fas fa-sort-amount-down"></i></a>
+                        </th>
+                        <th class="project-actions text-right" style="width: 15%">
+                            @if (ViewBag.IsCreate)
+                            {
+                                <a asp-action="@nameof(StrText.Create)" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus"></i>
+                                    @StrText.Create
+                                </a>
+                            }
+                            @if (ViewBag.IsExport)
+                            {
+                                <a asp-action="@nameof(StrText.Export)" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-file-export"></i>
+                                    @StrText.Export
+                                </a>
+                            }
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in listData)
+                    {
+                        <tr>
+                            <td class="text-bold @item.ArticleReviewTypeClass">
+                                <cus-display value="@item.ArticleReviewType" />
+                                @if (item.NotReplyCount > 0)
+                                {
+                                    <i class="far fa-comment-dots">@item.NotReplyCount</i>
+                                }
+                                @if (item.ArticleReviewType == ArticleReviewType.排程中)
+                                {
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="left" title="上線時間：@item.OnScheduleTime">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </button>
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a asp-action="Preview" asp-route-area="Admin" asp-route-id="@item.GetCodeOrId" target="_blank" class="btn btn-warning">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <cus-display value="@item.DisplaySeq" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.Views" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.PromotionCode" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.UserLog.CreateUserId" />
+                            </td>
+                            <td>
+                                @foreach (var articleCategoryArticle in item.ArticleCategoryArticles)
+                                {
+                                    <div><cus-display value="@articleCategoryArticle.ArticleCategory.Name" /></div>
+                                }
+                            </td>
+                            <td>
+                                <cus-display value="@item.Code" />
+                            </td>
+                            <td>
+                                <cus-display value="@item.Title" />
+                            </td>
+                            <td class="project-actions text-right">
+                                @if (ViewBag.IsDetails)
+                                {
+                                    <a asp-action="@nameof(StrText.Details)" asp-route-id="@item.ArticleId" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-folder"></i>
+                                        @StrText.Details
+                                    </a>
+                                }
+                                @if (ViewBag.IsEdit)
+                                {
+                                    <a asp-action="@nameof(StrText.Edit)" asp-route-id="@item.ArticleId" class="btn btn-info btn-sm">
+                                        <i class="fas fa-pencil-alt"></i>
+                                        @StrText.Edit
+                                    </a>
+                                }
+                                @if (ViewBag.IsDelete)
+                                {
+                                    <a asp-action="@nameof(StrText.Delete)" asp-route-id="@item.ArticleId" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                        @StrText.Delete
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+
+    @Html.PagedListPager(listData as IPagedList, (p) => Url.Action(nameof(StrText.Index), SetRouteValue(Model.SortBy, Model.SortDirection, p)),
+    new PagedListRenderOptions
+    {
+        LiElementClasses = new string[] { "paginate_button page-item previous" },
+        PageClasses = new string[] { "page-link" },
+        DisplayLinkToFirstPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = X.PagedList.Mvc.Core.PagedListDisplayMode.Always
+    })
+
+</section>
+
+

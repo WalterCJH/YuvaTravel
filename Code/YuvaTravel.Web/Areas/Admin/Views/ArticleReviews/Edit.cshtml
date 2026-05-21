@@ -1,0 +1,399 @@
+@model ArticleReviewEdit
+
+@{
+    ViewBag.Title = StrText.Edit + StrText.ArticleReviews;
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.ArticleInfo"
+                    resource="@StrText.ArticleReviews"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Edit)" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="ArticleId" />
+    <input type="hidden" asp-for="NotReplyCount" />
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="card card-comment @Model.CommentClass">
+                    <div class="card-header" style="align-items: center;">
+                        <h3 class="card-title">@StrText.ArticleComments</h3>
+                        @if (Model.NotReplyCount > 0)
+                        {
+                            <span class="badge badge-pill badge-danger">@Model.NotReplyCount</span>
+                        }
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="@Model.CommentIconClass"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-12 text-right pr-0">
+                            <button type="button" class="btn btn-primary btn-sm js-comment-create" data-toggle="modal" data-target="#modal-lg">
+                                <i class="fas fa-plus">
+                                </i>
+                                @StrText.Create
+                            </button>
+                        </div>
+                        @foreach (var comment in Model.ArticleComments)
+                        {
+                            <partial name="~/Areas/Admin/Views/ArticleComments/List.cshtml" model="comment" />
+                        }
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.Generally</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-auto mr-2">
+                                    <cus-checkbox asp-for="IsTop" />
+                                    <i class="fas fa-exclamation-circle" data-toggle="tooltip" data-placement="top" title="勾選時，文章會顯示在文章類別頁最上方"></i>
+                                </div>
+                                <div class="col-auto mr-2">
+                                    <cus-checkbox asp-for="IsFeaturedArticle" />
+                                    <i class="fas fa-exclamation-circle" data-toggle="tooltip" data-placement="top" title="勾選時，文章會顯示在首頁的精選文章"></i>
+                                </div>
+                                <div class="col-3 js-feature-article-displayseq">
+                                    <div class="row">
+                                        <input asp-for="FeaturedArticleDisplaySeq" class="form-control col-4" />
+                                        <div class="col-auto">
+                                            <i class="fas fa-exclamation-circle" data-toggle="tooltip" data-placement="top" title="精選文章順序"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ArticleReviewType" class="control-label col-md-12"></label>
+                            <cus-enum-select asp-for="ArticleReviewType" default-text="" class="form-control" />
+                            <span asp-validation-for="ArticleReviewType" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="OnScheduleTime" class="control-label col-md-12"></label>
+                            <cus-datetime asp-for="OnScheduleTime" />
+                            <span asp-validation-for="OnScheduleTime" class="text-danger"></span>
+                        </div>
+                        <div class="form-group js-disabled">
+                            <label asp-for="PromotionCode" class="control-label col-md-12"></label>
+                            <input asp-for="PromotionCode" class="form-control" />
+                            <span asp-validation-for="PromotionCode" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="DisplaySeq" class="control-label col-md-12"></label>
+                            <input asp-for="DisplaySeq" class="form-control" />
+                            <span asp-validation-for="DisplaySeq" class="text-danger"></span>
+                        </div>
+                        <div class="form-group js-disabled">
+                            <label asp-for="Code" class="control-label col-md-12"></label>
+                            <input asp-for="Code" class="form-control" />
+                            <span asp-validation-for="Code" class="text-danger"></span>
+                        </div>
+                        <div class="form-group js-disabled">
+                            <label asp-for="Title" class="control-label col-md-12"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-group js-disabled">
+                            <label asp-for="Description" class="control-label col-md-12"></label>
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+
+            <div class="col-md-6 js-disabled">
+
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.ArticleCategory</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @foreach (var item in Model.ArticleCategoryArticles)
+                            {
+                                <div class="col-4 col-xl-2 btn btn-default">
+                                    <label class="">@item.ArticleCategory.Name</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.Tags</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <cus-select2-tag asp-for="TagIds"></cus-select2-tag>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.Image</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <img src="@Model.ImagePath" class="img-adaptive" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ImageTitle" class="control-label col-md-12"></label>
+                            <input asp-for="ImageTitle" class="form-control" />
+                            <span asp-validation-for="ImageTitle" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ImageAlt" class="control-label col-md-12"></label>
+                            <input asp-for="ImageAlt" class="form-control" />
+                            <span asp-validation-for="ImageAlt" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.Meta</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="MetaTitle" class="control-label col-md-12"></label>
+                            <input asp-for="MetaTitle" class="form-control" />
+                            <span asp-validation-for="MetaTitle" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MetaDescription" class="control-label col-md-12"></label>
+                            <input asp-for="MetaDescription" class="form-control" />
+                            <span asp-validation-for="MetaDescription" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <a asp-action="Index" class="btn btn-secondary">回列表</a>
+                <input type="submit" value="儲存" class="btn btn-success float-right">
+            </div>
+        </div>
+    </section>
+</form>
+
+<form asp-action="@nameof(StrText.Create)" asp-controller="@nameof(StrText.ArticleComments)" method="post" enctype="multipart/form-data" id="js-modal-form-comment">
+    <input type="hidden" asp-for="ArticleId" />
+    <input type="hidden" asp-for="ArticleComment.UserId" />
+    <input type="hidden" id="ArticleCommentId" name="ArticleCommentId" />
+
+    <div class="modal fade" id="modal-lg">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="js-article-comment-title">新增留言</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="ArticleComment.CommentContent" class="control-label col-md-12"></label>
+                                <textarea name="CommentContent" class="form-control" rows="6">@Model.ArticleComment.CommentContent</textarea>
+                                <span class="text-danger" data-valmsg-for="CommentContent" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group js-disabled">
+                                <label asp-for="ArticleComment.CommentTime" class="control-label col-md-12"></label>
+                                <cus-datetime asp-for="ArticleComment.CommentTime" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group js-disabled">
+                                <label asp-for="ArticleComment.CommentUserId" class="control-label col-md-12"></label>
+                                <input asp-for="ArticleComment.CommentUserId" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group js-disabled">
+                                <label asp-for="ArticleComment.ReplyContent" class="control-label col-md-12"></label>
+                                <textarea name="ReplyContent" class="form-control" rows="6">@Model.ArticleComment.ReplyContent</textarea>
+                                <span class="text-danger" data-valmsg-for="ReplyContent" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group js-disabled">
+                                <label asp-for="ArticleComment.ReplyTime" class="control-label col-md-12"></label>
+                                <cus-datetime asp-for="ArticleComment.ReplyTime" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group js-disabled">
+                                <label asp-for="ArticleComment.ReplyUserId" class="control-label col-md-12"></label>
+                                <input asp-for="ArticleComment.ReplyUserId" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+                    <button type="submit" class="btn btn-primary" id="js-comment-submit">儲存</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+</form>
+
+@section Scripts {
+    <script src="~/Scripts/select2.js"></script>
+    <script src="~/Scripts/select2/tag-select2.js"></script>
+    <script>
+        $(function () {
+            $(".js-comment-create").click(function () {
+                var _modallist = $("#js-modal-form-comment");
+                _modallist.find("#CommentContent").val("").removeAttr("disabled");
+                _modallist.find("#ArticleComment_CommentTime").val("");
+                _modallist.find("#ArticleComment_CommentUserId").val("");
+                _modallist.find("#ReplyContent").val("");
+                _modallist.find("#ArticleComment_ReplyTime").val("");
+                _modallist.find("#ArticleComment_ReplyUserId").val("");
+
+                _modallist.attr('action', '/Admin/ArticleComments/Create');
+                _modallist.find("#js-article-comment-title").text("新增留言");
+                _modallist.find("#js-comment-submit").show();
+            });
+
+            $(".js-comment-edit").click(function () {
+                var _this = $(this);
+                var _list = _this.closest(".js-comment-list");
+                var _modallist = $("#js-modal-form-comment");
+                _modallist.find("#CommentContent").val(_list.find("#CommentContent").val()).removeAttr("disabled");
+                _modallist.find("#ArticleComment_CommentTime").val(_list.find("#CommentTime").val());
+                _modallist.find("#ArticleComment_CommentUserId").val(_list.find("#CommentUserId").val());
+                _modallist.find("#ReplyContent").val(_list.find("#ReplyContent").val());
+                _modallist.find("#ArticleComment_ReplyTime").val(_list.find("#ReplyTime").val());
+                _modallist.find("#ArticleComment_ReplyUserId").val(_list.find("#ReplyUserId").val());
+                _modallist.find("#ArticleCommentId").val(_this.attr("data-articlecommentid"));
+
+                _modallist.attr('action', '/Admin/ArticleComments/Edit');
+                _modallist.find("#js-article-comment-title").text("修改留言");
+                _modallist.find("#js-comment-submit").show();
+            });
+
+            $(".js-comment-details").click(function () {
+                var _this = $(this);
+                var _list = _this.closest(".js-comment-list");
+                var _modallist = $("#js-modal-form-comment");
+                _modallist.find("#CommentContent").val(_list.find("#CommentContent").val()).attr("disabled", "disabled");
+                _modallist.find("#ArticleComment_CommentTime").val(_list.find("#CommentTime").val());
+                _modallist.find("#ArticleComment_CommentUserId").val(_list.find("#CommentUserId").val());
+                _modallist.find("#ReplyContent").val(_list.find("#ReplyContent").val());
+                _modallist.find("#ArticleComment_ReplyTime").val(_list.find("#ReplyTime").val());
+                _modallist.find("#ArticleComment_ReplyUserId").val(_list.find("#ReplyUserId").val());
+                _modallist.find("#ArticleCommentId").val(_this.attr("data-articlecommentid"));
+
+                _modallist.find("#js-article-comment-title").text("檢視留言");
+                _modallist.find("#js-comment-submit").hide();
+            });
+
+            $(".js-comment-delete").click(function () {
+                var _this = $(this);
+                if (!confirm("刪除後無法復原，您確定要刪除嗎!?")) {
+                    return false;
+                }
+
+                var _modallist = $("#js-modal-form-comment");
+                _modallist.find("#ArticleCommentId").val(_this.attr("data-articlecommentid"));
+                _modallist.attr('action', '/Admin/ArticleComments/Delete');
+                _modallist.submit();
+            });
+
+            $("input[type='submit']").click(function () {
+                if ($("#ArticleReviewType :selected").text() === "@ArticleReviewType.已通過" && $("#OnScheduleTime").val() != "") {
+                    var dtnow = Date.now();
+                    var scheduleTime = new Date($("#OnScheduleTime").val());
+                    if (scheduleTime > dtnow) {
+                        if (!confirm("您有設定排程時間，目前尚未到達排程時間，但審核狀態為已通過，您確定要 [已通過] 嗎!?")) {
+                            return false;
+                        }
+                    }
+                }
+            });
+
+            function IsFeaturedArticleChange() {
+                var value = $("#IsFeaturedArticle").prop('checked');
+                if (value === true) {
+                    $(".js-feature-article-displayseq").show();
+                }
+                else {
+                    $(".js-feature-article-displayseq").hide();
+                    $("#FeaturedArticleDisplaySeq").val("0");
+                }
+            }
+
+            IsFeaturedArticleChange();
+            $("#IsFeaturedArticle").change(function () {
+                IsFeaturedArticleChange();
+            });
+
+
+        });
+    </script>
+
+    }

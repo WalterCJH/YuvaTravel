@@ -1,0 +1,32 @@
+@model  YuvaTravel.Data.Dtos.Articles.ArticleSDCommonQuestionCreateOrEdit
+
+@{
+}
+
+<div class="row js-data-row js-sortable-row">
+    <div class="col-12">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" name="ArticleSDCommonQuestions.Index" value="@Model.ArticleSDQuestionId" />
+        <input type="hidden" name="ArticleSDCommonQuestions[@Model.ArticleSDQuestionId].ArticleSDQuestionId" value="@Model.ArticleSDQuestionId" />
+    </div>
+    <div class="col-3">
+        <div class="form-group">
+            <label asp-for="Name" class="control-label col-md-12"></label>
+            <input type="text" name="ArticleSDCommonQuestions[@Model.ArticleSDQuestionId].Name" value="@Model.Name" class="form-control" />
+            <span class="text-danger" data-valmsg-for="ArticleSDCommonQuestions[@Model.ArticleSDQuestionId].Name" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+    <div class="col-9 pr-0">
+        <div class="form-group">
+            <div class="row">
+                <label asp-for="Text" class="control-label col-6"></label>
+                <div class="col-6 text-right">
+                    <button type="button" class="btn btn-secondary btn-sm mr-2 js-sortable-handle" title="長按上下移動順序"><i class="fas fa-arrows-alt-v"></i>&nbsp;上下移動</button>
+                    <button type="button" class="btn btn-danger btn-sm js-delete-row" title="刪除"><i class="fas fa-times-circle"></i>&nbsp;刪除</button>
+                </div>
+            </div>
+            <input type="text" name="ArticleSDCommonQuestions[@Model.ArticleSDQuestionId].Text" value="@Model.Text" class="form-control" />
+            <span class="text-danger" data-valmsg-for="ArticleSDCommonQuestions[@Model.ArticleSDQuestionId].Text" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+</div>

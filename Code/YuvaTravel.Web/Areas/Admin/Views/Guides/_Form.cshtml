@@ -1,0 +1,203 @@
+@model GuideCreateOrEdit
+
+<input type="hidden" asp-for="PortraitFileBase64" />
+<input type="hidden" asp-for="PortraitFileName" />
+<input type="hidden" asp-for="PortraitFileType" />
+<input type="hidden" asp-for="CoverFileBase64" />
+<input type="hidden" asp-for="CoverFileName" />
+<input type="hidden" asp-for="CoverFileType" />
+
+<div class="row">
+    <div class="col-12">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card card-primary">
+            <div class="card-header"><h3 class="card-title">@StrText.Generally</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <cus-checkbox asp-for="IsActive" />
+                </div>
+                <div class="form-group">
+                    <cus-checkbox asp-for="IsFeatured" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Code" class="control-label col-md-12"></label>
+                    <input asp-for="Code" class="form-control" />
+                    <span asp-validation-for="Code" class="text-danger"></span>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label asp-for="Name" class="control-label col-md-12"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label asp-for="NameEn" class="control-label col-md-12"></label>
+                        <input asp-for="NameEn" class="form-control" />
+                        <span asp-validation-for="NameEn" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 form-group">
+                        <label asp-for="YearsOfExperience" class="control-label col-md-12"></label>
+                        <input asp-for="YearsOfExperience" class="form-control" />
+                    </div>
+                    <div class="col-md-9 form-group">
+                        <label asp-for="Languages" class="control-label col-md-12"></label>
+                        <input asp-for="Languages" class="form-control" placeholder="例:JP · EN" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Bio" class="control-label col-md-12"></label>
+                    <textarea asp-for="Bio" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="Bio" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LongBio" class="control-label col-md-12"></label>
+                    <cus-ckeditor asp-for="LongBio" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="QuoteText" class="control-label col-md-12"></label>
+                    <textarea asp-for="QuoteText" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label asp-for="QuoteBy" class="control-label col-md-12"></label>
+                    <input asp-for="QuoteBy" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-secondary">
+            <div class="card-header"><h3 class="card-title">肖像圖 (寬 600px)</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <img src="@(string.IsNullOrEmpty(Model.PortraitUrl) ? "/Images/empty.jpg" : Model.PortraitUrl)" class="img-adaptive" id="portrait-preview" style="max-height:240px" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="PortraitFile" class="control-label col-md-12"></label>
+                    <input asp-for="PortraitFile" type="file" class="form-control" id="PortraitFile" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="PortraitUrl" class="control-label col-md-12"></label>
+                    <input asp-for="PortraitUrl" class="form-control" placeholder="或直接貼 URL" />
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-secondary">
+            <div class="card-header"><h3 class="card-title">封面圖 (寬 2000px)</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <img src="@(string.IsNullOrEmpty(Model.CoverUrl) ? "/Images/empty.jpg" : Model.CoverUrl)" class="img-adaptive" id="cover-preview" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="CoverFile" class="control-label col-md-12"></label>
+                    <input asp-for="CoverFile" type="file" class="form-control" id="CoverFile" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="CoverUrl" class="control-label col-md-12"></label>
+                    <input asp-for="CoverUrl" class="form-control" placeholder="或直接貼 URL" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card card-primary">
+            <div class="card-header"><h3 class="card-title">服務 / 評分</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label asp-for="Rating" class="control-label col-md-12"></label>
+                    <input asp-for="Rating" class="form-control" type="number" step="0.1" min="0" max="5" />
+                    <span asp-validation-for="Rating" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ReviewCount" class="control-label col-md-12"></label>
+                    <input asp-for="ReviewCount" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="ServiceFormat" class="control-label col-md-12"></label>
+                    <input asp-for="ServiceFormat" class="form-control" placeholder="半日 / 全日" />
+                </div>
+                <div class="row">
+                    <div class="col-6 form-group">
+                        <label asp-for="MinPeople" class="control-label col-md-12"></label>
+                        <input asp-for="MinPeople" class="form-control" />
+                    </div>
+                    <div class="col-6 form-group">
+                        <label asp-for="MaxPeople" class="control-label col-md-12"></label>
+                        <input asp-for="MaxPeople" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ResponseTime" class="control-label col-md-12"></label>
+                    <input asp-for="ResponseTime" class="form-control" placeholder="24 小時內" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="StartingPrice" class="control-label col-md-12"></label>
+                    <input asp-for="StartingPrice" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="DisplaySeq" class="control-label col-md-12"></label>
+                    <input asp-for="DisplaySeq" class="form-control" />
+                    <span asp-validation-for="DisplaySeq" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-warning">
+            <div class="card-header">
+                <h3 class="card-title">@StrText.Regions</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (Model.Regions.Count == 0)
+                {
+                    <small class="text-muted">尚未建立任何地區,請先到「地區」管理新增。</small>
+                }
+                else
+                {
+                    <div class="row js-section-div">
+                        <div class="col-12 mb-3 pl-0">
+                            <div class="custom-control custom-checkbox">
+                                <input asp-for="CheckAllRegions" class="custom-control-input js-section-checkAll" />
+                                <label asp-for="CheckAllRegions" class="custom-control-label"></label>
+                            </div>
+                        </div>
+                        @for (int i = 0; i < Model.Regions.Count(); i++)
+                        {
+                            var region = Model.Regions[i];
+                            string checkGroupId = $"Regions[{i}].IsActive";
+
+                            <div class="col-6 col-xl-6 btn btn-default">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" name="@checkGroupId" value="true" @(region.IsActive ? "checked" : "") class="custom-control-input" id="@checkGroupId" />
+                                    <input type="hidden" name="@checkGroupId" value="false" />
+                                    <label for="@checkGroupId" class="custom-control-label">@region.Name</label>
+                                    <input type="hidden" name="Regions[@i].Name" value="@region.Name" />
+                                    <input type="hidden" name="Regions[@i].RegionId" value="@region.RegionId" />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card card-warning">
+            <div class="card-header"><h3 class="card-title">@StrText.Tags</h3></div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <cus-select2-tag asp-for="TagIds"></cus-select2-tag>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,29 @@
+@{
+    ViewBag.Title = "沒有權限";
+    var requestId = Context.TraceIdentifier;
+}
+
+@section head_scripts {
+    <partial name="_ErrorStyles" />
+}
+
+<section class="err-page">
+    <div class="err-inner">
+        <img class="err-mark" src="~/Images/site/logo-mark.svg" alt="" />
+        <p class="err-eyebrow">FORBIDDEN · 403</p>
+        <h1 class="err-code">403</h1>
+        <h2 class="err-title">這扇門 你還沒有鑰匙</h2>
+        <p class="err-lede">
+            你目前的身份無法存取這個頁面 ——<br />
+            如果你覺得這是誤判,請聯絡我們協助。
+        </p>
+        <div class="err-actions">
+            <a href="/" class="btn btn-lg">回首頁 →</a>
+            <a href="javascript:history.back()" class="btn btn-ghost btn-lg">回上一頁</a>
+        </div>
+
+        <div class="err-meta">
+            REQUEST ID · <code>@requestId</code>
+        </div>
+    </div>
+</section>

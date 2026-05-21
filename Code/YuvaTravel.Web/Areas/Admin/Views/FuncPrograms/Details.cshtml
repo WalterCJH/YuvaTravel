@@ -1,0 +1,112 @@
+@model FuncProgramDetailsOrDelete
+
+@{
+    ViewBag.Title = StrText.Details + StrText.FuncPrograms;
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.UserInfo"
+                    resource="@StrText.FuncPrograms"
+                    current="@ViewBag.Title" />
+}
+
+<!-- Main content -->
+<section class="content js-disabled">
+    <div class="row">
+        <div class="col-12">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">@StrText.Generally</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-auto"><cus-checkbox asp-for="IsActiveCreate" /></div>
+                            <div class="col-auto">
+                                <cus-checkbox asp-for="IsChangeCreate" />
+                                <span asp-validation-for="IsChangeCreate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto"><cus-checkbox asp-for="IsActiveEdit" /></div>
+                            <div class="col-auto">
+                                <cus-checkbox asp-for="IsChangeEdit" />
+                                <span asp-validation-for="IsChangeEdit" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto"><cus-checkbox asp-for="IsActiveDelete" /></div>
+                            <div class="col-auto">
+                                <cus-checkbox asp-for="IsChangeDelete" />
+                                <span asp-validation-for="IsChangeDelete" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto"><cus-checkbox asp-for="IsActiveDetails" /></div>
+                            <div class="col-auto">
+                                <cus-checkbox asp-for="IsChangeDetails" />
+                                <span asp-validation-for="IsChangeDetails" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto"><cus-checkbox asp-for="IsActiveImport" /></div>
+                            <div class="col-auto">
+                                <cus-checkbox asp-for="IsChangeImport" />
+                                <span asp-validation-for="IsChangeImport" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto"><cus-checkbox asp-for="IsActiveExport" /></div>
+                            <div class="col-auto">
+                                <cus-checkbox asp-for="IsChangeExport" />
+                                <span asp-validation-for="IsChangeExport" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DisplaySeq" class="control-label col-md-12"></label>
+                        <input asp-for="DisplaySeq" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AuthorizeLevel" class="control-label col-md-12"></label>
+                        <input asp-for="AuthorizeLevelView" class="form-control" />
+                        <span asp-validation-for="AuthorizeLevel" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FuncGroupName" class="control-label col-md-12"></label>
+                        <input asp-for="FuncGroupName" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label col-md-12"></label>
+                        <input asp-for="Name" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FuncProgramId" class="control-label col-md-12"></label>
+                        <input asp-for="FuncProgramId" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Url" class="control-label col-md-12"></label>
+                        <input asp-for="Url" class="form-control" />
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <a asp-action="@nameof(StrText.Index)" class="btn btn-secondary">@StrText.ReturnIndex</a>
+        </div>
+    </div>
+</section>

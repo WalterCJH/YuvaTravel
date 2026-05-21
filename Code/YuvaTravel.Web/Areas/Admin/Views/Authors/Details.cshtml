@@ -1,0 +1,53 @@
+@model Author
+@{
+    ViewBag.Title = StrText.Details + StrText.Authors;
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.ArticleInfo"
+                    resource="@StrText.Authors"
+                    current="@ViewBag.Title" />
+}
+
+<section class="content">
+    <div class="card card-primary">
+        <div class="card-header"><h3 class="card-title">@StrText.Generally</h3></div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-2">啟用</dt><dd class="col-sm-10">@(Model.IsActive ? "是" : "否")</dd>
+                <dt class="col-sm-2">作者名稱</dt><dd class="col-sm-10">@Model.Name</dd>
+                <dt class="col-sm-2">英文名</dt><dd class="col-sm-10">@Model.NameEn</dd>
+                <dt class="col-sm-2">關聯嚮導</dt>
+                <dd class="col-sm-10">
+                    @if (Model.Guide != null)
+                    {
+                        <a asp-controller="Guides" asp-action="Details" asp-route-id="@Model.GuideId">
+                            @Model.Guide.Name
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">(無)</span>
+                    }
+                </dd>
+                <dt class="col-sm-2">簡介</dt><dd class="col-sm-10">@Model.Bio</dd>
+                <dt class="col-sm-2">肖像圖</dt>
+                <dd class="col-sm-10">
+                    @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+                    {
+                        <img src="@Model.AvatarUrl" alt="@Model.Name" style="max-height:120px" />
+                    }
+                </dd>
+                <dt class="col-sm-2">順序</dt><dd class="col-sm-10">@Model.DisplaySeq</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="row"><div class="col-12">
+        <a asp-action="@nameof(StrText.Index)" class="btn btn-secondary">@StrText.ReturnIndex</a>
+        @if (ViewBag.IsEdit)
+        {
+            <a asp-action="@nameof(StrText.Edit)" asp-route-id="@Model.AuthorId" class="btn btn-info float-right">@StrText.Edit</a>
+        }
+    </div></div>
+</section>

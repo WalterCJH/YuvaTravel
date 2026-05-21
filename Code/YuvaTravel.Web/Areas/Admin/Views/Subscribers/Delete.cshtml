@@ -1,0 +1,103 @@
+@model Subscriber
+@{
+    ViewBag.Title = StrText.Delete + StrText.Subscribers;
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.WebPageInfo"
+                    resource="@StrText.Subscribers"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Delete)" method="post">
+    <input type="hidden" name="id" value="@Model.SubscriberId" />
+    <section class="content js-disabled">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card card-primary">
+                    <div class="card-header"><h3 class="card-title">基本資訊</h3></div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-3">Email</dt>
+                            <dd class="col-sm-9"><strong>@Model.Email</strong></dd>
+                            <dt class="col-sm-3">啟用</dt>
+                            <dd class="col-sm-9"><cus-display value="@Model.IsActive" /></dd>
+                            <dt class="col-sm-3">訂閱時間</dt>
+                            <dd class="col-sm-9">@Model.SubscribeTime.ToString("yyyy/MM/dd HH:mm:ss")</dd>
+                            @if (Model.UnsubscribedTime.HasValue)
+                            {
+                                <dt class="col-sm-3">取消訂閱時間</dt>
+                                <dd class="col-sm-9">@Model.UnsubscribedTime.Value.ToString("yyyy/MM/dd HH:mm:ss")</dd>
+                            }
+                            @if (Model.ConfirmedTime.HasValue)
+                            {
+                                <dt class="col-sm-3">確認時間</dt>
+                                <dd class="col-sm-9">@Model.ConfirmedTime.Value.ToString("yyyy/MM/dd HH:mm:ss")</dd>
+                            }
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="card card-secondary">
+                    <div class="card-header"><h3 class="card-title">來源頁面</h3></div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-3">SourcePath</dt>
+                            <dd class="col-sm-9"><code>@Model.SourcePath</code></dd>
+                            <dt class="col-sm-3">SourceUrl</dt>
+                            <dd class="col-sm-9"><small>@Model.SourceUrl</small></dd>
+                            <dt class="col-sm-3">Referrer</dt>
+                            <dd class="col-sm-9"><small>@Model.Referrer</small></dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="card card-secondary">
+                    <div class="card-header"><h3 class="card-title">訪客環境</h3></div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-3">IP 位址</dt>
+                            <dd class="col-sm-9"><code>@Model.IpAddress</code></dd>
+                            <dt class="col-sm-3">User Agent</dt>
+                            <dd class="col-sm-9"><small class="text-muted">@Model.UserAgent</small></dd>
+                            <dt class="col-sm-3">Accept-Language</dt>
+                            <dd class="col-sm-9">@Model.AcceptLanguage</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="card card-secondary">
+                    <div class="card-header"><h3 class="card-title">行銷活動 (UTM)</h3></div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-3">utm_source</dt>
+                            <dd class="col-sm-9">@(Model.UtmSource ?? "—")</dd>
+                            <dt class="col-sm-3">utm_medium</dt>
+                            <dd class="col-sm-9">@(Model.UtmMedium ?? "—")</dd>
+                            <dt class="col-sm-3">utm_campaign</dt>
+                            <dd class="col-sm-9">@(Model.UtmCampaign ?? "—")</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-info">
+                    <div class="card-header"><h3 class="card-title">取消訂閱連結</h3></div>
+                    <div class="card-body">
+                        <p class="text-muted small mb-2">可放在電子報內讓使用者自助取消:</p>
+                        @{
+                            var unsubUrl = $"{Context.Request.Scheme}://{Context.Request.Host}/Unsubscribe?t={Model.UnsubscribeToken}";
+                        }
+                        <code style="word-break:break-all; font-size:11px;">@unsubUrl</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row"><div class="col-12">
+            <a asp-action="@nameof(StrText.Index)" class="btn btn-secondary">@StrText.ReturnIndex</a>
+            <input type="submit" value="@StrText.ConfirmDelete" class="btn btn-danger float-right js-delete-confirm">
+        </div></div>
+    </section>
+</form>

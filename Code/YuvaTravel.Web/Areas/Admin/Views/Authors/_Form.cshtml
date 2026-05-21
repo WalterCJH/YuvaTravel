@@ -1,0 +1,101 @@
+@model AuthorCreateOrEdit
+@{
+    var guideSelectList = ViewBag.GuideSelectList as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>;
+}
+
+<div class="row"><div class="col-12"><div asp-validation-summary="ModelOnly" class="text-danger"></div></div></div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card card-primary">
+            <div class="card-header"><h3 class="card-title">@StrText.Generally</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <cus-checkbox asp-for="IsActive" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="GuideId" class="control-label col-md-12"></label>
+                    <select asp-for="GuideId" id="GuideId" asp-items="guideSelectList" class="form-control">
+                        <option value="">(不關聯嚮導,僅輸入名稱)</option>
+                    </select>
+                    <small class="text-muted">作者可以是某位嚮導,也可以是純粹自輸入名稱。<strong>選擇嚮導後,名稱欄位會隱藏 (由嚮導同步)</strong></small>
+                </div>
+
+                <div class="row" id="author-name-row">
+                    <div class="col-md-6 form-group">
+                        <label asp-for="Name" class="control-label col-md-12"></label>
+                        <input asp-for="Name" id="AuthorName" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label asp-for="NameEn" class="control-label col-md-12"></label>
+                        <input asp-for="NameEn" id="AuthorNameEn" class="form-control" />
+                        <span asp-validation-for="NameEn" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Bio" class="control-label col-md-12"></label>
+                    <textarea asp-for="Bio" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Bio" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DisplaySeq" class="control-label col-md-12"></label>
+                    <input asp-for="DisplaySeq" class="form-control" />
+                    <span asp-validation-for="DisplaySeq" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card card-secondary">
+            <div class="card-header"><h3 class="card-title">肖像圖 (200×200)</h3></div>
+            <div class="card-body">
+                <div class="form-group">
+                    @{
+                        var previewUrl = !string.IsNullOrEmpty(Model.AvatarUrl_) ? Model.AvatarUrl_ : (!string.IsNullOrEmpty(Model.AvatarUrl) ? Model.AvatarUrl : "/Images/empty.jpg");
+                    }
+                    <img src="@previewUrl" style="width:200px;height:200px;object-fit:cover;border-radius:8px;" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="AvatarFile" class="control-label col-md-12"></label>
+                    <input asp-for="AvatarFile" type="file" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="AvatarUrl" class="control-label col-md-12"></label>
+                    <input asp-for="AvatarUrl" class="form-control" placeholder="或直接貼 URL" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        function init() {
+            var sel = document.getElementById('GuideId');
+            var nameRow = document.getElementById('author-name-row');
+            var nameInput = document.getElementById('AuthorName');
+            var nameEnInput = document.getElementById('AuthorNameEn');
+            if (!sel || !nameRow) return;
+
+            function sync() {
+                if (sel.value) {
+                    if (nameInput) nameInput.value = '';
+                    if (nameEnInput) nameEnInput.value = '';
+                    nameRow.style.display = 'none';
+                } else {
+                    nameRow.style.display = '';
+                }
+            }
+            sel.addEventListener('change', sync);
+            sync();
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+</script>

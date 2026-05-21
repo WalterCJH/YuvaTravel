@@ -1,0 +1,48 @@
+<script>
+    $(function () {
+        // 文章多選
+        $('.js-select2-articles').select2({
+            placeholder: '選擇要關聯的文章',
+            allowClear: true,
+            width: '100%'
+        });
+
+        // 肖像圖預覽
+        if ($('#PortraitFileBase64').val() != null && $('#PortraitFileBase64').val() != '') {
+            $('#portrait-preview').attr('src', $('#PortraitFileBase64').val());
+        }
+        $('#PortraitFile').change(function () {
+            if (this.files && this.files[0]) {
+                var fileName = this.files[0].name;
+                var fileType = this.files[0].type;
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#portrait-preview').attr('src', e.target.result);
+                    $('#PortraitFileBase64').val(e.target.result);
+                    $('#PortraitFileName').val(fileName);
+                    $('#PortraitFileType').val(fileType);
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        // 封面圖預覽
+        if ($('#CoverFileBase64').val() != null && $('#CoverFileBase64').val() != '') {
+            $('#cover-preview').attr('src', $('#CoverFileBase64').val());
+        }
+        $('#CoverFile').change(function () {
+            if (this.files && this.files[0]) {
+                var fileName = this.files[0].name;
+                var fileType = this.files[0].type;
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#cover-preview').attr('src', e.target.result);
+                    $('#CoverFileBase64').val(e.target.result);
+                    $('#CoverFileName').val(fileName);
+                    $('#CoverFileType').val(fileType);
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    });
+</script>

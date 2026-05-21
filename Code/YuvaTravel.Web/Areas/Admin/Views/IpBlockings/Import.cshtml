@@ -1,0 +1,70 @@
+@model IpBlockingImport
+
+@{
+    ViewBag.Title = StrText.Import + StrText.IpBlockings;
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.WebPageInfo"
+                    resource="@StrText.IpBlockings"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Import)" method="post" enctype="multipart/form-data">
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.Generally</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-12"><a asp-action="ImportEx" class="btn btn-warning">@StrText.UploadFileEx</a></div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="File" class="control-label col-md-12"></label>
+                            <input asp-for="File" class="form-control" />
+                            <span asp-validation-for="File" class="text-danger"></span>
+                        </div>
+                        <cus-checkbox asp-for="IsReplaceAllData" />
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <a asp-action="@nameof(StrText.Index)" class="btn btn-secondary">@StrText.ReturnIndex</a>
+                <input type="submit" value="@StrText.Upload" class="btn btn-success float-right">
+            </div>
+        </div>
+    </section>
+</form>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $("input[type='submit']").click(function () {
+                if ($("#IsReplaceAllData").prop("checked") === true) {
+                    if (!confirm("勾選覆蓋全部資料，會刪除所有資料，再新增上傳資料，確定要上傳檔案嗎!?")) {
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
+}

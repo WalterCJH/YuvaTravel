@@ -1,0 +1,83 @@
+@model RecruitAgentEdit
+
+@{
+    ViewBag.Title = StrText.Edit + StrText.RecruitAgents;
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.FormInfo"
+                    resource="@StrText.RecruitAgents"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Edit)" method="post">
+    <input type="hidden" asp-for="RecruitAgentId" />
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.Generally</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group js-disabled">
+                            <cus-checkbox asp-for="IsContact" />
+                        </div>
+                        <div class="form-group js-disabled">
+                            <label asp-for="ContactTime" class="control-label col-md-12"></label>
+                            <input asp-for="ContactTime" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Nick" class="control-label col-md-12"></label>
+                            <input asp-for="Nick" class="form-control" />
+                            <span asp-validation-for="Nick" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Phone" class="control-label col-md-12"></label>
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TelegramID" class="control-label col-md-12"></label>
+                            <input asp-for="TelegramID" class="form-control" />
+                            <span asp-validation-for="TelegramID" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LineID" class="control-label col-md-12"></label>
+                            <input asp-for="LineID" class="form-control" />
+                            <span asp-validation-for="LineID" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Other" class="control-label col-md-12"></label>
+                            <textarea asp-for="Other" class="form-control" rows="6"></textarea>
+                            <span asp-validation-for="Other" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <a asp-action="@nameof(StrText.Index)" class="btn btn-secondary">@StrText.ReturnIndex</a>
+                <input type="submit" value="@StrText.Save" class="btn btn-success float-right">
+            </div>
+        </div>
+    </section>
+</form>
+
+@section Scripts {
+    }

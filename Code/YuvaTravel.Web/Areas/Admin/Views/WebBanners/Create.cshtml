@@ -1,0 +1,108 @@
+@model WebBannerCreateOrEdit
+
+@{
+    ViewBag.Title = StrText.Create + StrText.WebBanners;
+}
+
+@section breadcrumb{
+    <cus-breadcrumb category="@StrText.WebPageInfo"
+                    resource="@StrText.WebBanners"
+                    current="@ViewBag.Title" />
+}
+
+<form asp-action="@nameof(StrText.Create)" method="post" enctype="multipart/form-data">
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.Generally</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="BeginTime" class="control-label col-md-12"></label>
+                                    <cus-date asp-for="BeginTime" />
+                                    <span asp-validation-for="BeginTime" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="EndTime" class="control-label col-md-12"></label>
+                                    <cus-date asp-for="EndTime" />
+                                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ImageTitle" class="control-label col-md-12"></label>
+                            <input asp-for="ImageTitle" class="form-control" />
+                            <span asp-validation-for="ImageTitle" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ImageAlt" class="control-label col-md-12"></label>
+                            <input asp-for="ImageAlt" class="form-control" />
+                            <span asp-validation-for="ImageAlt" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ImageClickUrl" class="control-label col-md-12"></label>
+                            <input asp-for="ImageClickUrl" class="form-control" />
+                            <span asp-validation-for="ImageClickUrl" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="DisplaySeq" class="control-label col-md-12"></label>
+                            <input asp-for="DisplaySeq" class="form-control" />
+                            <span asp-validation-for="DisplaySeq" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <div class="col-md-6">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h3 class="card-title">@StrText.Image</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="ImageFile" class="control-label col-md-12"></label>
+                            <input asp-for="ImageFile" type="file" class="form-control" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <a asp-action="@nameof(StrText.Index)" class="btn btn-secondary">@StrText.ReturnIndex</a>
+                <input type="submit" value="@StrText.Save" class="btn btn-success float-right">
+            </div>
+        </div>
+    </section>
+</form>
+
+@section Scripts {
+    }
+
