@@ -31,22 +31,25 @@ jobs:
     - name: Publish
       run: dotnet publish ./Code/YuvaTravel.Web/YuvaTravel.Web.csproj -c Release --no-build -o ./publish
 
-    # 6. 停止 App Pool
-    - name: Stop App Pool
+    # 6. 上線維護頁,讓 IIS 釋放 dll 鎖
+    - name: Take site offline
       shell: powershell
       run: |
-        & "C:\Windows\System32\inetsrv\appcmd.exe" stop apppool /apppool.name:"${{ secrets.APP_POOL_NAME }}"
+        $offline = Join-Path "${{ secrets.IIS_SITE_PATH }}" "app_offline.htm"
+        Set-Content -Path $offline -Value '<html><body><h2>系統更新中,請稍候...</h2></body></html>' -Encoding UTF8 -Force
         Start-Sleep -Seconds 3
 
-    # 7. 複製檔案
+    # 7. 複製檔案 (/XF 排除 app_offline.htm 避免被 /MIR 刪掉)
     - name: Deploy Files
       shell: powershell
       run: |
-        robocopy ./publish "${{ secrets.IIS_SITE_PATH }}" /MIR /NJH /NJS
+        robocopy ./publish "${{ secrets.IIS_SITE_PATH }}" /MIR /NJH /NJS /XF app_offline.htm
         if ($LASTEXITCODE -le 7) { exit 0 }  # robocopy 成功碼是 0~7
 
-    # 8. 啟動 App Pool
-    - name: Start App Pool
+    # 8. 撤下維護頁,下一個 request 觸發新版啟動 (失敗時也要執行避免站台卡在離線)
+    - name: Bring site online
+      if: always()
       shell: powershell
-      run: | 
-        & "C:\Windows\System32\inetsrv\appcmd.exe" start apppool /apppool.name:"${{ secrets.APP_POOL_NAME }}"
+      run: |
+        $offline = Join-Path "${{ secrets.IIS_SITE_PATH }}" "app_offline.htm"
+        Remove-Item -Path $offline -Force -ErrorAction SilentlyContinue
