@@ -21,11 +21,11 @@ jobs:
 
     # 3. 還原套件
     - name: Restore
-      run: dotnet restore ./Code/YuvaTravel.Web.sln
+      run: dotnet restore ./Code/YuvaTravel.sln
 
     # 4. 編譯
     - name: Build
-      run: dotnet build ./Code/YuvaTravel.Web.sln -c Release --no-restore
+      run: dotnet build ./Code/YuvaTravel.sln -c Release --no-restore
       
     # 5. Publish
     - name: Publish
